@@ -61,7 +61,16 @@ class _HistorialState extends State<Historial> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
-      title: Text('Tu progreso'),
+      title: Text('Historial'),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          onPressed: () {},
+        )
+      ],
     );
 
     if (widget.save && !dismissed) {
@@ -85,22 +94,15 @@ class _HistorialState extends State<Historial> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text(
-                      "NO HAY DATOS PARA MOSTRAR UN GRÁFICO",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    title: const Text(
+                      "No hay datos pra mostrar un gráfico",
                     ),
-                    content: GestureDetector(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 120),
-                        child: Text(
-                          'OK',
-                          style: TextStyle(fontSize: 20, color: Colors.blue),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
+                    actions: [
+                      FlatButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("Ok"),
+                      )
+                    ],
                   );
                 });
           }
@@ -108,7 +110,7 @@ class _HistorialState extends State<Historial> {
         child: Icon(
           Icons.insert_chart,
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.indigo,
       ),
       body: data.length == 0
           ? Center(
@@ -134,6 +136,30 @@ class _HistorialState extends State<Historial> {
                             dismissed = true;
                           });
                         },
+                        confirmDismiss: (DismissDirection direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Confirmar"),
+                                content: const Text(
+                                    "Estás seguro de querer eliminar este registro?"),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("CANCELAR"),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text("ELIMINAR"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         direction: DismissDirection.endToStart,
                         background: Container(
                           alignment: AlignmentDirectional.centerEnd,
@@ -155,18 +181,24 @@ class _HistorialState extends State<Historial> {
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.blueGrey),
+                                      color: Color(0xFFDB556B),
+                                      decoration: TextDecoration.underline),
                                 ),
                                 Container(
                                   width: MediaQuery.of(context).size.width,
                                   child: ListTile(
-                                    leading: Icon(Icons.check),
+                                    leading: Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),
                                     title: Text(
                                       'Peso: ${double.parse(data[index].peso).toStringAsFixed(2)} kgs.',
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green),
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        //color: Colors.green),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -174,21 +206,24 @@ class _HistorialState extends State<Historial> {
                                   width: MediaQuery.of(context).size.width,
                                   child: ListTile(
                                     leading: data[index].grasa != null
-                                        ? Icon(Icons.check)
-                                        : Icon(Icons.close),
+                                        ? Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          )
+                                        : Icon(Icons.close, color: Colors.red),
                                     title: data[index].grasa != null
                                         ? Text(
                                             'Grasa: ${((double.parse(data[index].grasa) * 0.01 * (double.parse(data[index].peso)))).toStringAsFixed(2)} kgs.',
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.green,
+                                                fontSize: 21,
+                                                //color: Colors.green,
                                                 fontWeight: FontWeight.bold),
                                           )
                                         : Text(
                                             'Grasa: -',
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.red,
+                                                fontSize: 21,
+                                                //color: Colors.red,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                   ),
@@ -197,21 +232,24 @@ class _HistorialState extends State<Historial> {
                                   width: MediaQuery.of(context).size.width,
                                   child: ListTile(
                                     leading: data[index].musculo != null
-                                        ? Icon(Icons.check)
-                                        : Icon(Icons.close),
+                                        ? Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          )
+                                        : Icon(Icons.close, color: Colors.red),
                                     title: data[index].musculo != null
                                         ? Text(
                                             'Músculo: ${((double.parse(data[index].musculo) * 0.01 * (double.parse(data[index].peso)))).toStringAsFixed(2)} kgs.',
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.green,
+                                                fontSize: 21,
+                                                //color: Colors.green,
                                                 fontWeight: FontWeight.bold),
                                           )
                                         : Text(
                                             'Músculo: -',
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.redAccent,
+                                                fontSize: 21,
+                                                //color: Colors.redAccent,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                   ),
@@ -222,15 +260,15 @@ class _HistorialState extends State<Historial> {
                         ),
                       ),
                       data[index].image == null
-                          ? Container(
-                              margin: EdgeInsets.symmetric(horizontal: 50),
-                              child: Padding(
-                                padding: EdgeInsets.all(100),
-                                child: Text(
-                                  "NO HAY IMAGEN",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red),
+                          ? Expanded(
+                              child: Center(
+                                child: Container(
+                                  child: Padding(
+                                      padding: EdgeInsets.all(100),
+                                      child: Image.network(
+                                        "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
+                                        fit: BoxFit.fill,
+                                      )),
                                 ),
                               ),
                             )

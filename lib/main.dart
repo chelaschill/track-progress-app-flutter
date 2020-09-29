@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:progreso_corporal_app/grafico.dart';
 import 'package:progreso_corporal_app/historial.dart';
 
 void main() => runApp(MazetaApp());
@@ -17,8 +16,6 @@ class _MazetaAppState extends State<MazetaApp> {
   final _form = GlobalKey<FormState>();
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
-  final _imageFocusNode = FocusNode();
-  var _validate = false;
   bool _save;
   DateTime currDate;
   File image;
@@ -121,6 +118,11 @@ class _MazetaAppState extends State<MazetaApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Colors.teal,
+          ),
+        ),
         routes: {
           Historial.routeName: (ctx) => Historial(
               save: _save,
@@ -132,8 +134,13 @@ class _MazetaAppState extends State<MazetaApp> {
         },
         home: Scaffold(
           appBar: AppBar(
-            title: Text('Registra tu progreso'),
-            backgroundColor: Colors.redAccent,
+            title: Text(
+              'Registra tu progreso',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
           ),
           body: Builder(builder: (context) {
             return ListView(
@@ -143,15 +150,28 @@ class _MazetaAppState extends State<MazetaApp> {
                     Container(
                       width: 300,
                       child: ListTile(
-                        leading: Icon(Icons.calendar_today),
-                        title: Text(
-                          "${currDate.day}/${currDate.month}/${currDate.year}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                              color: Colors.black45),
+                        leading: Icon(
+                          Icons.calendar_today,
+                          color: Colors.red,
                         ),
-                        trailing: Icon(Icons.keyboard_arrow_down),
+                        title: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16),
+                              child: Text(
+                                "${currDate.day}/${currDate.month}/${currDate.year}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
                         onTap: () {
                           _pickDate(context);
                         },
@@ -173,6 +193,9 @@ class _MazetaAppState extends State<MazetaApp> {
                               width: 110,
                               child: TextFormField(
                                 decoration: InputDecoration(
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.black, width: 0.8)),
                                     border: OutlineInputBorder(),
                                     labelText: 'Peso'),
                                 keyboardType: TextInputType.number,
@@ -207,6 +230,9 @@ class _MazetaAppState extends State<MazetaApp> {
                               width: 110,
                               child: TextFormField(
                                 decoration: InputDecoration(
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.black, width: 0.8)),
                                   border: OutlineInputBorder(),
                                   labelText: '%Grasa',
                                 ),
@@ -240,6 +266,9 @@ class _MazetaAppState extends State<MazetaApp> {
                               width: 110,
                               child: TextFormField(
                                 decoration: InputDecoration(
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.black, width: 0.8)),
                                   border: OutlineInputBorder(),
                                   labelText: '%Músculo',
                                 ),
@@ -312,10 +341,19 @@ class _MazetaAppState extends State<MazetaApp> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (image != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 135),
-                        child: Text('Doble toque para borrar la imagen',
-                            style: TextStyle(color: Colors.redAccent)),
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Text(
+                              'Doble toque para borrar la imagen',
+                              style: TextStyle(
+                                  color: Colors.redAccent, fontSize: 20),
+                            ),
+                          ),
+                        ],
                       ),
                     Padding(
                       padding:
@@ -327,9 +365,12 @@ class _MazetaAppState extends State<MazetaApp> {
                           onPressed: () {
                             saveMetrics(context);
                           },
-                          child: Text("Registrar"),
-                          color: Colors.blueGrey,
-                          textColor: Colors.white60,
+                          child: Text(
+                            "Registrar",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          color: Colors.teal,
+                          textColor: Colors.white,
                         ),
                       ),
                     ),
@@ -343,10 +384,13 @@ class _MazetaAppState extends State<MazetaApp> {
                       child: Container(
                         height: 50,
                         child: RaisedButton(
-                          child: Text("Ver Historial "),
+                          child: Text(
+                            "Historial ",
+                            style: TextStyle(fontSize: 20),
+                          ),
                           elevation: 10,
-                          color: Colors.redAccent,
-                          textColor: Colors.white60,
+                          color: Colors.teal,
+                          textColor: Colors.white,
                           onPressed: () {
                             _save = false;
                             Navigator.pushNamed(context, Historial.routeName);

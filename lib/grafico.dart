@@ -34,7 +34,6 @@ class _GraficState extends State<Grafico> {
           suma += double.parse(widget.data[i].musculo) *
               0.01 *
               double.parse(widget.data[i].peso);
-          // double.parse(widget.data[i].musculo);
         }
       }
       promedio = suma / widget.data.length;
@@ -78,8 +77,7 @@ class _GraficState extends State<Grafico> {
                   : double.parse((double.parse(widget.data[i].grasa) *
                           0.01 *
                           double.parse(widget.data[i].peso))
-                      .toStringAsFixed(
-                          2)), //double.parse((double.parse(widget.data[i].grasa).toStringAsFixed(2))),
+                      .toStringAsFixed(2)),
               xAxis: widget.data[i].date));
         }
       }
@@ -96,8 +94,7 @@ class _GraficState extends State<Grafico> {
                   : double.parse((double.parse(widget.data[i].musculo) *
                           0.01 *
                           double.parse(widget.data[i].peso))
-                      .toStringAsFixed(
-                          2)), //double.parse((double.parse(widget.data[i].musculo).toStringAsFixed(2))),
+                      .toStringAsFixed(2)),
               xAxis: widget.data[i].date));
         }
       }
@@ -111,44 +108,61 @@ class _GraficState extends State<Grafico> {
     final toDate = DateTime.now(); // la maxima fecha
 
     return Scaffold(
-      body: Center(
-        child: Container(
-          height: MediaQuery.of(context).size.height / 1.3,
-          width: MediaQuery.of(context).size.width,
-          child: BezierChart(
-            fromDate: fromDate,
-            bezierChartScale: BezierChartScale.WEEKLY,
-            toDate: toDate,
-            selectedDate: toDate,
-            series: [
-              BezierLine(
-                lineColor: Colors.black45,
-                label: "Peso",
-                onMissingValue: (_) => missingValue('peso'),
-                data: showPeso(),
-              ),
-              BezierLine(
-                lineColor: Colors.redAccent,
-                label: "Grasa",
-                onMissingValue: (_) => missingValue('grasa'),
-                data: showMetric('grasa'),
-              ),
-              BezierLine(
-                lineColor: Colors.blue,
-                label: "Musculo",
-                onMissingValue: (_) => missingValue('musculo'),
-                data: showMetric('musculo'),
-              ),
-            ],
-            config: BezierChartConfig(
+      appBar: AppBar(
+        title: Text('GRÁFICO'),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: BezierChart(
+          fromDate: fromDate,
+          bezierChartScale: BezierChartScale.WEEKLY,
+          toDate: toDate,
+          selectedDate: toDate,
+          series: [
+            BezierLine(
+              lineColor: Colors.black45,
+              label: "Peso",
+              onMissingValue: (_) => missingValue('peso'),
+              data: showPeso(),
+            ),
+            BezierLine(
+              lineColor: Colors.redAccent,
+              label: "Grasa",
+              onMissingValue: (_) => missingValue('grasa'),
+              data: showMetric('grasa'),
+            ),
+            BezierLine(
+              lineColor: Colors.blue,
+              label: "Musculo",
+              onMissingValue: (_) => missingValue('musculo'),
+              data: showMetric('musculo'),
+            ),
+          ],
+          config: BezierChartConfig(
+              showDataPoints: true, //muestra los puntos
+              displayYAxis: true,
+              stepsYAxis: 15,
+              bubbleIndicatorLabelStyle: TextStyle(color: Colors.black),
+              /*backgroundGradient: LinearGradient(
+                  colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight),*/
+              /*displayLinesXAxis: true,
+            pinchZoom: true,
+            xLinesColor: Colors.deepPurpleAccent,
+            , */ //ni idea que hacen
+              displayDataPointWhenNoValue:
+                  false, //esconde puntos no registrados
+              updatePositionOnTap: true,
               verticalIndicatorStrokeWidth: 3.0,
               verticalIndicatorColor: Colors.black26,
               showVerticalIndicator: true,
               verticalIndicatorFixedPosition: false,
-              backgroundColor: Colors.blueGrey,
-              footerHeight: 30.0,
-            ),
-          ),
+              backgroundColor: Color(0xFFC3EBF4),
+              footerHeight: 35.0,
+              xAxisTextStyle: TextStyle(color: Colors.black),
+              yAxisTextStyle: TextStyle(color: Colors.black)),
         ),
       ),
     );
