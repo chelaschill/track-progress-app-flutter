@@ -14,6 +14,9 @@ class MazetaApp extends StatefulWidget {
 }
 
 class _MazetaAppState extends State<MazetaApp> {
+  final _toGrasaFocusNode = FocusNode();
+  final _toMusculoFocusNode = FocusNode();
+  final _imageFocusNode = FocusNode();
   var _validate = false;
   bool _save;
   DateTime currDate;
@@ -29,6 +32,13 @@ class _MazetaAppState extends State<MazetaApp> {
   void initState() {
     super.initState();
     currDate = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _toGrasaFocusNode.dispose();
+    _toMusculoFocusNode.dispose();
+    super.dispose();
   }
 
   void _pickDate(BuildContext context) async {
@@ -165,6 +175,11 @@ class _MazetaAppState extends State<MazetaApp> {
                               onChanged: (value) {
                                 peso = value;
                               },
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_toGrasaFocusNode);
+                              },
                             ),
                           ),
                           SizedBox(
@@ -182,6 +197,12 @@ class _MazetaAppState extends State<MazetaApp> {
                               controller: gcontroller,
                               onChanged: (value) {
                                 grasa = value;
+                              },
+                              textInputAction: TextInputAction.next,
+                              focusNode: _toGrasaFocusNode,
+                              onSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_toMusculoFocusNode);
                               },
                             ),
                           ),
@@ -201,6 +222,8 @@ class _MazetaAppState extends State<MazetaApp> {
                               onChanged: (value) {
                                 musculo = value;
                               },
+                              textInputAction: TextInputAction.done,
+                              focusNode: _toMusculoFocusNode,
                             ),
                           ),
                         ],
@@ -263,7 +286,8 @@ class _MazetaAppState extends State<MazetaApp> {
                           const EdgeInsets.only(left: 8, right: 8, top: 20),
                       child: Container(
                         height: 50,
-                        child: FlatButton(
+                        child: RaisedButton(
+                          elevation: 10,
                           onPressed: () {
                             setState(() {
                               pcontroller.text.isEmpty
@@ -290,8 +314,9 @@ class _MazetaAppState extends State<MazetaApp> {
                       padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                       child: Container(
                         height: 50,
-                        child: FlatButton(
+                        child: RaisedButton(
                           child: Text("Ver Historial "),
+                          elevation: 10,
                           color: Colors.redAccent,
                           textColor: Colors.white60,
                           onPressed: () {
