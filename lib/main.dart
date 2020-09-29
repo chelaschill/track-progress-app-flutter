@@ -14,6 +14,7 @@ class MazetaApp extends StatefulWidget {
 }
 
 class _MazetaAppState extends State<MazetaApp> {
+  final _form = GlobalKey<FormState>();
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
   final _imageFocusNode = FocusNode();
@@ -101,6 +102,11 @@ class _MazetaAppState extends State<MazetaApp> {
   }
 
   void saveMetrics(BuildContext context) {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
+    _save = true;
     Navigator.pushNamed(context, Historial.routeName).then(
       (_) {
         pcontroller.clear();
@@ -154,119 +160,149 @@ class _MazetaAppState extends State<MazetaApp> {
                     SizedBox(
                       height: 20,
                     ),
-                    Row(children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            //height: 40,
-                            width: 110,
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  errorText: pcontroller.text.isEmpty
-                                      ? '*OBLIGATORIO'
-                                      : null,
+                    Form(
+                      key: _form,
+                      child: Row(children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              //height: 40,
+                              width: 110,
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Peso'),
+                                keyboardType: TextInputType.number,
+                                controller: pcontroller,
+                                onChanged: (value) {
+                                  peso = value;
+                                },
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_toGrasaFocusNode);
+                                },
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return '*OBLIGATORIO*';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Valor inválido';
+                                  }
+                                  if (double.parse(value) <= 0) {
+                                    return 'Valor inválido.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              //height: 40,
+                              width: 110,
+                              child: TextFormField(
+                                decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Peso'),
-                              keyboardType: TextInputType.number,
-                              controller: pcontroller,
-                              onChanged: (value) {
-                                peso = value;
-                              },
-                              textInputAction: TextInputAction.next,
-                              onSubmitted: (_) {
-                                FocusScope.of(context)
-                                    .requestFocus(_toGrasaFocusNode);
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            //height: 40,
-                            width: 110,
-                            child: TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: '%Grasa',
-                              ),
-                              keyboardType: TextInputType.number,
-                              controller: gcontroller,
-                              onChanged: (value) {
-                                grasa = value;
-                              },
-                              textInputAction: TextInputAction.next,
-                              focusNode: _toGrasaFocusNode,
-                              onSubmitted: (_) {
-                                FocusScope.of(context)
-                                    .requestFocus(_toMusculoFocusNode);
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            //height: 40,
-                            width: 110,
-                            child: TextField(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: '%Músculo',
-                              ),
-                              keyboardType: TextInputType.number,
-                              controller: mcontroller,
-                              onChanged: (value) {
-                                musculo = value;
-                              },
-                              textInputAction: TextInputAction.done,
-                              focusNode: _toMusculoFocusNode,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: image == null
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(border: Border.all()),
-                                  height: 300,
-                                  child: Center(
-                                      child: IconButton(
-                                          icon: Icon(Icons.camera_alt),
-                                          onPressed: () {
-                                            createAlertDialog(context);
-                                          })),
+                                  labelText: '%Grasa',
                                 ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: GestureDetector(
+                                keyboardType: TextInputType.number,
+                                controller: gcontroller,
+                                onChanged: (value) {
+                                  grasa = value;
+                                },
+                                textInputAction: TextInputAction.next,
+                                focusNode: _toGrasaFocusNode,
+                                onFieldSubmitted: (_) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_toMusculoFocusNode);
+                                },
+                                validator: (value) {
+                                  if (value.isNotEmpty) {
+                                    if (double.tryParse(value) == null ||
+                                        double.tryParse(value) <= 0) {
+                                      return 'Valor inválido';
+                                    }
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              //height: 40,
+                              width: 110,
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: '%Músculo',
+                                ),
+                                keyboardType: TextInputType.number,
+                                controller: mcontroller,
+                                onChanged: (value) {
+                                  musculo = value;
+                                },
+                                textInputAction: TextInputAction.done,
+                                focusNode: _toMusculoFocusNode,
+                                validator: (value) {
+                                  if (value.isNotEmpty) {
+                                    if (double.tryParse(value) == null ||
+                                        double.tryParse(value) <= 0) {
+                                      return 'Valor inválido';
+                                    }
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: image == null
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
                                   child: Container(
-                                    child: Image.file(
-                                      image,
-                                    ),
+                                    decoration:
+                                        BoxDecoration(border: Border.all()),
+                                    height: 300,
+                                    child: Center(
+                                        child: IconButton(
+                                            icon: Icon(Icons.camera_alt),
+                                            onPressed: () {
+                                              createAlertDialog(context);
+                                            })),
                                   ),
-                                  onTap: () {
-                                    createAlertDialog(context);
-                                  },
-                                  onDoubleTap: () {
-                                    setState(() {
-                                      image = null;
-                                    });
-                                  },
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: GestureDetector(
+                                    child: Container(
+                                      child: Image.file(
+                                        image,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      createAlertDialog(context);
+                                    },
+                                    onDoubleTap: () {
+                                      setState(() {
+                                        image = null;
+                                      });
+                                    },
+                                  ),
                                 ),
-                              ),
-                      )
-                    ]),
+                        )
+                      ]),
+                    ),
                     SizedBox(
                       width: 1,
                     )
@@ -289,15 +325,7 @@ class _MazetaAppState extends State<MazetaApp> {
                         child: RaisedButton(
                           elevation: 10,
                           onPressed: () {
-                            setState(() {
-                              pcontroller.text.isEmpty
-                                  ? _validate = true
-                                  : _validate = false;
-                            });
-                            if (!_validate) {
-                              _save = true;
-                              saveMetrics(context);
-                            }
+                            saveMetrics(context);
                           },
                           child: Text("Registrar"),
                           color: Colors.blueGrey,
