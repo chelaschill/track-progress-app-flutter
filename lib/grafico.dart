@@ -4,7 +4,7 @@ import 'package:bezier_chart/bezier_chart.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
 
 class Grafico extends StatefulWidget {
-  static const routeName = 'grafico';
+  static const routeName = 'grafico-screen';
 
   final List<Metrics> data;
 

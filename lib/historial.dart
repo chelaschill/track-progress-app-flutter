@@ -4,11 +4,10 @@ import 'dart:io';
 
 import 'package:progreso_corporal_app/grafico.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
+import 'package:progreso_corporal_app/registrar.dart';
 
 class Historial extends StatefulWidget {
-  static const routeName = 'stats-screen';
-
-  final bool save;
+  /*final bool save;
   final String grasa;
   final String musculo;
   final String peso;
@@ -16,7 +15,7 @@ class Historial extends StatefulWidget {
   final File image;
 
   Historial(
-      {this.save, this.peso, this.grasa, this.musculo, this.date, this.image});
+      {this.save, this.peso, this.grasa, this.musculo, this.date, this.image});*/
 
   @override
   _HistorialState createState() => _HistorialState();
@@ -25,33 +24,40 @@ class Historial extends StatefulWidget {
 List<Metrics> data = [];
 
 class _HistorialState extends State<Historial> {
+  bool save = false;
+  String grasa;
+  String musculo;
+  String peso;
+  DateTime date;
+  File image;
   bool dismissed = false;
+  bool repetido = false;
 
   void add() {
     bool repetido = false;
     if (data.isEmpty) {
       data.add(
         Metrics(
-            peso: widget.peso,
-            grasa: widget.grasa,
-            musculo: widget.musculo,
-            date: widget.date,
-            image: widget.image),
+            peso: peso,
+            grasa: grasa,
+            musculo: musculo,
+            date: date,
+            image: image),
       );
     } else {
       for (int i = 0; i < data.length; i++) {
-        if (widget.date == data[i].date) {
+        if (date == data[i].date) {
           repetido = true;
         }
       }
       if (!repetido) {
         data.add(
           Metrics(
-              peso: widget.peso,
-              grasa: widget.grasa,
-              musculo: widget.musculo,
-              date: widget.date,
-              image: widget.image),
+              peso: peso,
+              grasa: grasa,
+              musculo: musculo,
+              date: date,
+              image: image),
         );
       }
     }
@@ -68,12 +74,26 @@ class _HistorialState extends State<Historial> {
             Icons.add,
             color: Colors.white,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Registro(),
+                )).then((argumentos) {
+              save = argumentos[5];
+              grasa = argumentos[1];
+              musculo = argumentos[2];
+              peso = argumentos[0];
+              date = argumentos[3];
+              image = argumentos[4];
+              setState(() {});
+            });
+          },
         )
       ],
     );
 
-    if (widget.save && !dismissed) {
+    if (save && !dismissed) {
       add();
       data.sort((a, b) => a.date.compareTo(b.date));
     }
@@ -100,7 +120,7 @@ class _HistorialState extends State<Historial> {
                     actions: [
                       FlatButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("Ok"),
+                        child: const Text("OK"),
                       )
                     ],
                   );

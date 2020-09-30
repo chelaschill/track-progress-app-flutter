@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:progreso_corporal_app/grafico.dart';
 
 import 'package:progreso_corporal_app/historial.dart';
+import 'package:progreso_corporal_app/registrar.dart';
 
 void main() => runApp(MazetaApp());
 
@@ -13,7 +15,22 @@ class MazetaApp extends StatefulWidget {
 }
 
 class _MazetaAppState extends State<MazetaApp> {
-  final _form = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "+ZTracker",
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          color: Colors.teal,
+        ),
+      ),
+      home: Historial(),
+    );
+  }
+}
+
+/*
+final _form = GlobalKey<FormState>();
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
   bool _save;
@@ -115,24 +132,8 @@ class _MazetaAppState extends State<MazetaApp> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            color: Colors.teal,
-          ),
-        ),
-        routes: {
-          Historial.routeName: (ctx) => Historial(
-              save: _save,
-              peso: peso,
-              grasa: grasa,
-              musculo: musculo,
-              date: currDate,
-              image: image),
-        },
-        home: Scaffold(
+
+Scaffold(
           appBar: AppBar(
             title: Text(
               'Registra tu progreso',
@@ -403,6 +404,4 @@ class _MazetaAppState extends State<MazetaApp> {
               ],
             );
           }),
-        ));
-  }
-}
+        )*/
