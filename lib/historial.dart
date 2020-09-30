@@ -7,16 +7,6 @@ import 'package:progreso_corporal_app/widgets/metrics.dart';
 import 'package:progreso_corporal_app/registrar.dart';
 
 class Historial extends StatefulWidget {
-  /*final bool save;
-  final String grasa;
-  final String musculo;
-  final String peso;
-  final DateTime date;
-  final File image;
-
-  Historial(
-      {this.save, this.peso, this.grasa, this.musculo, this.date, this.image});*/
-
   @override
   _HistorialState createState() => _HistorialState();
 }
@@ -31,7 +21,6 @@ class _HistorialState extends State<Historial> {
   DateTime date;
   File image;
   bool dismissed = false;
-  bool repetido = false;
 
   void add() {
     bool repetido = false;
@@ -46,7 +35,7 @@ class _HistorialState extends State<Historial> {
       );
     } else {
       for (int i = 0; i < data.length; i++) {
-        if (date == data[i].date) {
+        if (date.day == data[i].date.day) {
           repetido = true;
         }
       }
@@ -80,12 +69,12 @@ class _HistorialState extends State<Historial> {
                 MaterialPageRoute(
                   builder: (context) => Registro(),
                 )).then((argumentos) {
-              save = argumentos[5];
+              peso = argumentos[0];
               grasa = argumentos[1];
               musculo = argumentos[2];
-              peso = argumentos[0];
               date = argumentos[3];
               image = argumentos[4];
+              save = argumentos[5];
               setState(() {});
             });
           },
@@ -145,7 +134,10 @@ class _HistorialState extends State<Historial> {
               itemBuilder: (ctx, index) {
                 return Card(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8.0),
+                    ),
+                  ),
                   child: Column(
                     children: [
                       Dismissible(
