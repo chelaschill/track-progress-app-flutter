@@ -111,21 +111,23 @@ class _RegistroState extends State<Registro> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Registra tu progreso',
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
-        ),
+    final appBar = AppBar(
+      title: Text(
+        'Registra tu progreso',
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
       ),
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: Builder(builder: (context) {
         return ListView(
           children: [
             Column(
               children: [
                 Container(
-                  width: 300,
+                  width: MediaQuery.of(context).size.width / 1.5,
                   child: ListTile(
                     leading: Icon(
                       Icons.calendar_today,
@@ -278,7 +280,8 @@ class _RegistroState extends State<Registro> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Container(
                                 decoration: BoxDecoration(border: Border.all()),
-                                height: 300,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
                                 child: Center(
                                     child: IconButton(
                                         icon: Icon(Icons.camera_alt),
@@ -305,7 +308,7 @@ class _RegistroState extends State<Registro> {
                                 },
                               ),
                             ),
-                    )
+                    ),
                   ]),
                 ),
                 SizedBox(
