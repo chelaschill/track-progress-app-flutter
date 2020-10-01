@@ -20,11 +20,9 @@ class _HistorialState extends State<Historial> {
   String peso;
   DateTime date;
   File image;
-  bool dismissed = false;
 
   void add() {
     if (data.isEmpty) {
-      bool repetido = false;
       data.add(
         Metrics(
             peso: peso,
@@ -54,7 +52,6 @@ class _HistorialState extends State<Historial> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text('Historial'),
       actions: [
@@ -65,10 +62,11 @@ class _HistorialState extends State<Historial> {
           ),
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Registro(data),
-                )).then((argumentos) {
+              context,
+              MaterialPageRoute(
+                builder: (context) => Registro(),
+              ),
+            ).then((argumentos) {
               peso = argumentos[0];
               grasa = argumentos[1];
               musculo = argumentos[2];
@@ -82,11 +80,10 @@ class _HistorialState extends State<Historial> {
       ],
     );
 
-    if (save && !dismissed) {
+    if (save) {
       add();
       data.sort((a, b) => a.date.compareTo(b.date));
     }
-    dismissed = false;
 
     return Scaffold(
       appBar: appBar,
@@ -145,7 +142,7 @@ class _HistorialState extends State<Historial> {
                         onDismissed: (_) {
                           setState(() {
                             data.removeAt(index);
-                            dismissed = true;
+                            save = false;
                           });
                         },
                         confirmDismiss: (DismissDirection direction) async {

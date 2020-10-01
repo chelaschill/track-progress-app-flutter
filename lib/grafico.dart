@@ -19,15 +19,20 @@ class _GraficState extends State<Grafico> {
   double missingValue(String medida) {
     double suma = 0;
     double promedio;
+    int contador = 0;
     if (medida == 'grasa') {
       for (int i = 0; i < widget.data.length; i++) {
         if (widget.data[i].grasa != null) {
           suma += double.parse(widget.data[i].grasa) *
               0.01 *
               double.parse(widget.data[i].peso);
+          contador++;
         }
       }
-      promedio = suma / widget.data.length;
+      if (contador == 0) {
+        return 0;
+      }
+      promedio = suma / contador;
       return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
     } else if (medida == 'musculo') {
       for (int i = 0; i < widget.data.length; i++) {
@@ -35,9 +40,13 @@ class _GraficState extends State<Grafico> {
           suma += double.parse(widget.data[i].musculo) *
               0.01 *
               double.parse(widget.data[i].peso);
+          contador++;
         }
       }
-      promedio = suma / widget.data.length;
+      if (contador == 0) {
+        return 0;
+      }
+      promedio = suma / contador;
       return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
     } else if (medida == 'peso') {
       for (int i = 0; i < widget.data.length; i++) {
@@ -273,14 +282,14 @@ class _GraficState extends State<Grafico> {
           bandera = true;
         }
         if (!points.contains(widget.data[i].date)) {
-          points.add(DataPoint<DateTime>(
-              value: bandera
-                  ? 0
-                  : double.parse((double.parse(widget.data[i].grasa) *
-                          0.01 *
-                          double.parse(widget.data[i].peso))
-                      .toStringAsFixed(2)),
-              xAxis: widget.data[i].date));
+          if (!bandera) {
+            points.add(DataPoint<DateTime>(
+                value: double.parse((double.parse(widget.data[i].grasa) *
+                        0.01 *
+                        double.parse(widget.data[i].peso))
+                    .toStringAsFixed(2)),
+                xAxis: widget.data[i].date));
+          }
         }
       }
     } else if (medida == 'musculo') {
@@ -290,18 +299,139 @@ class _GraficState extends State<Grafico> {
           bandera = true;
         }
         if (!points.contains(widget.data[i].date)) {
-          points.add(DataPoint<DateTime>(
-              value: bandera
-                  ? 0
-                  : double.parse((double.parse(widget.data[i].musculo) *
-                          0.01 *
-                          double.parse(widget.data[i].peso))
-                      .toStringAsFixed(2)),
-              xAxis: widget.data[i].date));
+          if (!bandera) {
+            points.add(DataPoint<DateTime>(
+                value: double.parse((double.parse(widget.data[i].musculo) *
+                        0.01 *
+                        double.parse(widget.data[i].peso))
+                    .toStringAsFixed(2)),
+                xAxis: widget.data[i].date));
+          }
         }
       }
     }
     return points;
+  }
+
+  List<double> xAxisValues() {
+    List<double> points = [];
+    for (int i = 0; i < widget.data.length; i++) {
+      points.add(double.parse((widget.data[i].date.month).toString()));
+    }
+    return points;
+  }
+
+  List<BezierLine> showLines(String scale) {
+    List<BezierLine> lines = [];
+
+    if (scale == "weekly") {
+      lines.add(
+        BezierLine(
+          lineColor: Colors.black45,
+          label: "Peso",
+          onMissingValue: (_) => missingValue('peso'),
+          data: showPeso(),
+        ),
+      );
+      for (int i = 0; i < showMetric("grasa").length; i++) {
+        if (showMetric("grasa")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.orange,
+              label: "Grasa",
+              onMissingValue: (_) => missingValue('grasa'),
+              data: showMetric('grasa'),
+            ),
+          );
+          break;
+        }
+      }
+      for (int i = 0; i < showMetric("musculo").length; i++) {
+        if (showMetric("musculo")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.red,
+              label: "Músculo",
+              onMissingValue: (_) => missingValue('musculo'),
+              data: showMetric('musculo'),
+            ),
+          );
+          break;
+        }
+      }
+    } else if (scale == "monthly") {
+      lines.add(
+        BezierLine(
+          lineColor: Colors.black45,
+          label: "Peso",
+          onMissingValue: (_) => missingValue('peso'),
+          data: dataMensual("peso"),
+        ),
+      );
+      for (int i = 0; i < showMetric("grasa").length; i++) {
+        if (showMetric("grasa")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.orange,
+              label: "Grasa",
+              onMissingValue: (_) => missingValue('grasa'),
+              data: dataMensual("grasa"),
+            ),
+          );
+          break;
+        }
+      }
+      for (int i = 0; i < showMetric("musculo").length; i++) {
+        if (showMetric("musculo")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.red,
+              label: "Músculo",
+              onMissingValue: (_) => missingValue('musculo'),
+              data: dataMensual("musculo"),
+            ),
+          );
+          break;
+        }
+      }
+    } else if (scale == "yearly") {
+      lines.add(
+        BezierLine(
+          lineColor: Colors.black45,
+          label: "Peso",
+          onMissingValue: (_) => missingValue('peso'),
+          data: dataAnual("peso"),
+        ),
+      );
+      for (int i = 0; i < showMetric("grasa").length; i++) {
+        if (showMetric("grasa")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.orange,
+              label: "Grasa",
+              onMissingValue: (_) => missingValue('grasa'),
+              data: dataAnual('grasa'),
+            ),
+          );
+          break;
+        }
+      }
+      for (int i = 0; i < showMetric("musculo").length; i++) {
+        if (showMetric("musculo")[i].value != 0) {
+          lines.add(
+            BezierLine(
+              lineColor: Colors.red,
+              label: "Músculo",
+              onMissingValue: (_) => missingValue('musculo'),
+              data: dataAnual('musculo'),
+            ),
+          );
+          break;
+        }
+      }
+    }
+
+    return lines;
   }
 
   @override
@@ -328,26 +458,15 @@ class _GraficState extends State<Grafico> {
                     fromDate: fromDate,
                     toDate: toDate,
                     selectedDate: toDate,
-                    series: [
-                      BezierLine(
-                        lineColor: Colors.black45,
-                        label: "Peso",
-                        onMissingValue: (_) => missingValue('peso'),
-                        data: showPeso(),
-                      ),
-                      BezierLine(
-                        lineColor: Colors.orange,
-                        label: "Grasa",
-                        onMissingValue: (_) => missingValue('grasa'),
-                        data: showMetric('grasa'),
-                      ),
-                      BezierLine(
-                        lineColor: Colors.red,
-                        label: "Músculo",
-                        onMissingValue: (_) => missingValue('musculo'),
-                        data: showMetric('musculo'),
-                      ),
-                    ],
+                    footerDateTimeBuilder:
+                        (DateTime value, BezierChartScale scaleType) {
+                      final newFormat = intl.DateFormat('dd/MM');
+                      return newFormat.format(value);
+                    },
+                    /*footerValueBuilder: (double value) {
+                      return "${value.toInt()}\nHrs";
+                    },*/
+                    series: showLines("weekly"), //showLines("weekly"),
                     config: BezierChartConfig(
                         showDataPoints: true, //muestra los puntos
                         displayYAxis: true,
@@ -373,9 +492,10 @@ class _GraficState extends State<Grafico> {
                         showVerticalIndicator: false,
                         verticalIndicatorFixedPosition: false,
                         backgroundColor: Colors.transparent,
-                        footerHeight: 55.0,
+                        footerHeight: 35.0,
                         xAxisTextStyle: TextStyle(color: Colors.black),
-                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle:
+                            TextStyle(color: Colors.black, fontSize: 10),
                         startYAxisFromNonZeroValue: false),
                   ),
                 ),
@@ -389,25 +509,7 @@ class _GraficState extends State<Grafico> {
                     fromDate: fromDate,
                     toDate: toDate,
                     selectedDate: toDate,
-                    series: [
-                      BezierLine(
-                        lineColor: Colors.black45,
-                        label: "Peso",
-                        onMissingValue: (_) => missingValue('peso'),
-                        data: dataMensual("peso"),
-                      ),
-                      BezierLine(
-                        lineColor: Colors.orange,
-                        label: "Grasa",
-                        onMissingValue: (_) => missingValue('grasa'),
-                        data: dataMensual("grasa"),
-                      ),
-                      BezierLine(
-                          lineColor: Colors.red,
-                          label: "Músculo",
-                          onMissingValue: (_) => missingValue('musculo'),
-                          data: dataMensual("musculo")),
-                    ],
+                    series: showLines("monthly"),
                     config: BezierChartConfig(
                         showDataPoints: true, //muestra los puntos
                         displayYAxis: true,
@@ -424,7 +526,7 @@ class _GraficState extends State<Grafico> {
                         //ni idea que hacen
                         displayDataPointWhenNoValue:
                             false, //esconde puntos no registrados
-                        updatePositionOnTap: true,
+                        updatePositionOnTap: false,
                         verticalIndicatorStrokeWidth: 3.0,
                         verticalIndicatorColor: Colors.black26,
                         bubbleIndicatorColor: Colors.white60,
@@ -433,9 +535,10 @@ class _GraficState extends State<Grafico> {
                         showVerticalIndicator: false,
                         verticalIndicatorFixedPosition: false,
                         backgroundColor: Colors.transparent,
-                        footerHeight: 55.0,
+                        footerHeight: 35.0,
                         xAxisTextStyle: TextStyle(color: Colors.black),
-                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle:
+                            TextStyle(color: Colors.black, fontSize: 10),
                         startYAxisFromNonZeroValue: false),
                   ),
                 ),
@@ -449,26 +552,7 @@ class _GraficState extends State<Grafico> {
                     fromDate: fromDate,
                     toDate: toDate,
                     selectedDate: toDate,
-                    series: [
-                      BezierLine(
-                        lineColor: Colors.black45,
-                        label: "Peso",
-                        onMissingValue: (_) => missingValue('peso'),
-                        data: dataAnual("peso"),
-                      ),
-                      BezierLine(
-                        lineColor: Colors.orange,
-                        label: "Grasa",
-                        onMissingValue: (_) => missingValue('grasa'),
-                        data: dataAnual('grasa'),
-                      ),
-                      BezierLine(
-                        lineColor: Colors.red,
-                        label: "Músculo",
-                        onMissingValue: (_) => missingValue('musculo'),
-                        data: dataAnual('musculo'),
-                      ),
-                    ],
+                    series: showLines("yearly"),
                     config: BezierChartConfig(
                         showDataPoints: true, //muestra los puntos
                         displayYAxis: true,
@@ -485,7 +569,7 @@ class _GraficState extends State<Grafico> {
                         //ni idea que hacen
                         displayDataPointWhenNoValue:
                             false, //esconde puntos no registrados
-                        updatePositionOnTap: true,
+                        updatePositionOnTap: false,
                         verticalIndicatorStrokeWidth: 3.0,
                         verticalIndicatorColor: Colors.black26,
                         bubbleIndicatorColor: Colors.white60,
@@ -494,9 +578,10 @@ class _GraficState extends State<Grafico> {
                         showVerticalIndicator: false,
                         verticalIndicatorFixedPosition: false,
                         backgroundColor: Colors.transparent,
-                        footerHeight: 55.0,
+                        footerHeight: 35.0,
                         xAxisTextStyle: TextStyle(color: Colors.black),
-                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle:
+                            TextStyle(color: Colors.black, fontSize: 10),
                         startYAxisFromNonZeroValue: false),
                   ),
                 ),

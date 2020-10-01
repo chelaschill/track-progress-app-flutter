@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -7,9 +8,9 @@ import 'package:progreso_corporal_app/historial.dart';
 class Registro extends StatefulWidget {
   static const routeName = 'registro-screen';
 
-  final data;
+  /*final data;
 
-  Registro(this.data);
+  Registro(this.data);*/
 
   @override
   _RegistroState createState() => _RegistroState();
@@ -110,17 +111,16 @@ class _RegistroState extends State<Registro> {
     }
     _save = true;
 
-    for (int i = 0; i < widget.data.length; i++) {
-      if (widget.data[i].date.day == currDate.day &&
-          widget.data[i].date.month == currDate.month &&
-          widget.data[i].date.year == currDate.year) {
+    for (int i = 0; i < data.length; i++) {
+      if (data[i].date.day == currDate.day &&
+          data[i].date.month == currDate.month &&
+          data[i].date.year == currDate.year) {
         repetido = true;
         reemplazar = i;
         break;
       }
     }
     if (repetido) {
-      print('hi');
       showDialog(
         context: context,
         builder: (context) {
@@ -146,8 +146,7 @@ class _RegistroState extends State<Registro> {
         },
       );
     }
-    if (!repetido) {
-      print('WTF');
+    if (!repetido || data.isEmpty) {
       Navigator.of(context).pop(
         [peso, grasa, musculo, currDate, image, _save],
       );
@@ -235,7 +234,7 @@ class _RegistroState extends State<Registro> {
                             },
                             validator: (value) {
                               if (value.isEmpty) {
-                                return '*OBLIGATORIO*';
+                                return 'Obligatorio';
                               }
                               if (double.tryParse(value) == null) {
                                 return 'Valor inválido';
@@ -279,10 +278,7 @@ class _RegistroState extends State<Registro> {
                                   return 'Valor inválido';
                                 }
                               }
-                              if (value.isEmpty &&
-                                  double.tryParse(value) == null) {
-                                return 'V';
-                              }
+
                               return null;
                             },
                           ),
@@ -314,10 +310,6 @@ class _RegistroState extends State<Registro> {
                                     double.tryParse(value) <= 0) {
                                   return 'Valor inválido';
                                 }
-                              }
-                              if (value.isEmpty &&
-                                  double.tryParse(value) == null) {
-                                return 'Retrocede y vuelve a interntarlo';
                               }
                               return null;
                             },
