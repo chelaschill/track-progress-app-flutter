@@ -23,8 +23,8 @@ class _HistorialState extends State<Historial> {
   bool dismissed = false;
 
   void add() {
-    bool repetido = false;
     if (data.isEmpty) {
+      bool repetido = false;
       data.add(
         Metrics(
             peso: peso,
@@ -35,20 +35,20 @@ class _HistorialState extends State<Historial> {
       );
     } else {
       for (int i = 0; i < data.length; i++) {
-        if (date.day == data[i].date.day) {
-          repetido = true;
+        if (date.day == data[i].date.day &&
+            date.month == data[i].date.month &&
+            date.year == data[i].date.year) {
+          data.removeAt(i);
         }
       }
-      if (!repetido) {
-        data.add(
-          Metrics(
-              peso: peso,
-              grasa: grasa,
-              musculo: musculo,
-              date: date,
-              image: image),
-        );
-      }
+      data.add(
+        Metrics(
+            peso: peso,
+            grasa: grasa,
+            musculo: musculo,
+            date: date,
+            image: image),
+      );
     }
   }
 
@@ -67,7 +67,7 @@ class _HistorialState extends State<Historial> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Registro(),
+                  builder: (context) => Registro(data),
                 )).then((argumentos) {
               peso = argumentos[0];
               grasa = argumentos[1];
@@ -92,7 +92,7 @@ class _HistorialState extends State<Historial> {
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (data.length != 0) {
+          if (data.length > 1) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -104,7 +104,7 @@ class _HistorialState extends State<Historial> {
                 builder: (context) {
                   return AlertDialog(
                     title: const Text(
-                      "No hay datos pra mostrar un gráfico",
+                      "No hay suficientes datos para mostrar un gráfico",
                     ),
                     actions: [
                       FlatButton(
@@ -155,7 +155,7 @@ class _HistorialState extends State<Historial> {
                               return AlertDialog(
                                 title: const Text("Confirmar"),
                                 content: const Text(
-                                    "Estás seguro de querer eliminar este registro?"),
+                                    "¿Estás seguro de querer eliminar este registro?"),
                                 actions: [
                                   FlatButton(
                                     onPressed: () =>

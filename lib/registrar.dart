@@ -6,6 +6,11 @@ import 'package:progreso_corporal_app/historial.dart';
 
 class Registro extends StatefulWidget {
   static const routeName = 'registro-screen';
+
+  final data;
+
+  Registro(this.data);
+
   @override
   _RegistroState createState() => _RegistroState();
 }
@@ -20,6 +25,7 @@ class _RegistroState extends State<Registro> {
   String peso;
   String grasa;
   String musculo;
+  int reemplazar;
   TextEditingController pcontroller = TextEditingController();
   TextEditingController gcontroller = TextEditingController();
   TextEditingController mcontroller = TextEditingController();
@@ -97,14 +103,55 @@ class _RegistroState extends State<Registro> {
   }
 
   void saveMetrics(BuildContext ctx) {
+    bool repetido = false;
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
     _save = true;
-    Navigator.of(context).pop(
-      [peso, grasa, musculo, currDate, image, _save],
-    );
+
+    for (int i = 0; i < widget.data.length; i++) {
+      if (widget.data[i].date.day == currDate.day &&
+          widget.data[i].date.month == currDate.month &&
+          widget.data[i].date.year == currDate.year) {
+        repetido = true;
+        reemplazar = i;
+        break;
+      }
+    }
+    if (repetido) {
+      print('hi');
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Esta fecha yá esta registrada!"),
+            content: const Text("¿Deseas reemplazarla?"),
+            actions: [
+              FlatButton(
+                child: const Text("CANCELAR"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: const Text("REEMPLAZAR"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(
+                    [peso, grasa, musculo, currDate, image, _save],
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+    if (!repetido) {
+      print('WTF');
+      Navigator.of(context).pop(
+        [peso, grasa, musculo, currDate, image, _save],
+      );
+    }
   }
 
   @override
@@ -123,18 +170,19 @@ class _RegistroState extends State<Registro> {
         return ListView(
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width / 1.5,
                   child: ListTile(
-                    leading: Icon(
-                      Icons.calendar_today,
-                      color: Colors.red,
-                    ),
                     title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Icon(
+                          Icons.calendar_today,
+                          color: Colors.red,
+                        ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             "${currDate.day}/${currDate.month}/${currDate.year}",
                             style: TextStyle(
