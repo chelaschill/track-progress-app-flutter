@@ -279,6 +279,10 @@ class _RegistroState extends State<Registro> {
                                   return 'Valor inválido';
                                 }
                               }
+                              if (value.isEmpty &&
+                                  double.tryParse(value) == null) {
+                                return 'V';
+                              }
                               return null;
                             },
                           ),
@@ -310,6 +314,10 @@ class _RegistroState extends State<Registro> {
                                     double.tryParse(value) <= 0) {
                                   return 'Valor inválido';
                                 }
+                              }
+                              if (value.isEmpty &&
+                                  double.tryParse(value) == null) {
+                                return 'Retrocede y vuelve a interntarlo';
                               }
                               return null;
                             },

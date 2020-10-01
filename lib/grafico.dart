@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:progreso_corporal_app/historial.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
 
 class Grafico extends StatefulWidget {
@@ -62,6 +63,207 @@ class _GraficState extends State<Grafico> {
     return points;
   }
 
+  List<DataPoint<DateTime>> dataMensual(String medida) {
+    List<DataPoint<DateTime>> mensual = [];
+
+    int mesInicial = widget.data[0].date.month;
+    int mesFinal = widget.data[widget.data.length - 1].date.month;
+
+    if (medida == 'peso') {
+      for (int i = mesInicial; i <= mesFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i) {
+            suma += double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.month > i) {
+            break;
+          }
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
+            index = k;
+            break;
+          }
+        }
+        mensual.add(
+          DataPoint<DateTime>(
+              value: double.parse((promedio).toStringAsFixed(2)),
+              xAxis: widget.data[index].date),
+        );
+      }
+      return mensual;
+    } else if (medida == 'grasa') {
+      for (int i = mesInicial; i <= mesFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i && widget.data[j].grasa != null) {
+            suma += double.parse(widget.data[j].grasa) *
+                0.01 *
+                double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.month > i) {
+            break;
+          }
+        }
+        if (contador == 0) {
+          return mensual;
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
+            index = k;
+            break;
+          }
+        }
+        mensual.add(DataPoint<DateTime>(
+            value: double.parse((promedio).toStringAsFixed(2)),
+            xAxis: widget.data[index].date));
+      }
+      return mensual;
+    } else if (medida == 'musculo') {
+      for (int i = mesInicial; i <= mesFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i &&
+              widget.data[j].musculo != null) {
+            suma += double.parse(widget.data[j].musculo) *
+                0.01 *
+                double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.month > i) {
+            break;
+          }
+        }
+        if (contador == 0) {
+          return mensual;
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
+            index = k;
+            break;
+          }
+        }
+        mensual.add(
+          DataPoint<DateTime>(
+              value: double.parse((promedio).toStringAsFixed(2)),
+              xAxis: widget.data[index].date),
+        );
+      }
+      return mensual;
+    }
+  }
+
+  List<DataPoint<DateTime>> dataAnual(String medida) {
+    List<DataPoint<DateTime>> anual = [];
+
+    int anioInicial = widget.data[0].date.year;
+    int anioFinal = widget.data[widget.data.length - 1].date.year;
+
+    if (medida == 'peso') {
+      for (int i = anioInicial; i <= anioFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i) {
+            suma += double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.year > i) {
+            break;
+          }
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
+            index = k;
+            break;
+          }
+        }
+        anual.add(DataPoint<DateTime>(
+            value: double.parse((promedio).toStringAsFixed(2)),
+            xAxis: widget.data[index].date));
+      }
+      return anual;
+    } else if (medida == 'grasa') {
+      for (int i = anioInicial; i <= anioFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i && widget.data[j].grasa != null) {
+            suma += double.parse(widget.data[j].grasa) *
+                0.01 *
+                double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.year > i) {
+            break;
+          }
+        }
+        if (contador == 0) {
+          return anual;
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
+            index = k;
+            break;
+          }
+        }
+        anual.add(DataPoint<DateTime>(
+            value: double.parse((promedio).toStringAsFixed(2)),
+            xAxis: widget.data[index].date));
+      }
+      return anual;
+    } else if (medida == 'musculo') {
+      for (int i = anioInicial; i <= anioFinal; i++) {
+        int contador = 0;
+        double suma = 0;
+        double promedio = 0;
+        int index = 0;
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i && widget.data[j].musculo != null) {
+            suma += double.parse(widget.data[j].musculo) *
+                0.01 *
+                double.parse(widget.data[j].peso);
+            contador++;
+          } else if (widget.data[j].date.year > i) {
+            break;
+          }
+        }
+        if (contador == 0) {
+          return anual;
+        }
+        promedio = suma / contador;
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
+            index = k;
+            break;
+          }
+        }
+        anual.add(
+          DataPoint<DateTime>(
+              value: double.parse((promedio).toStringAsFixed(2)),
+              xAxis: widget.data[index].date),
+        );
+      }
+      return anual;
+    }
+  }
+
   List<DataPoint<DateTime>> showMetric(String medida) {
     List<DataPoint<DateTime>> points = [];
     if (medida == 'grasa') {
@@ -102,18 +304,6 @@ class _GraficState extends State<Grafico> {
     return points;
   }
 
-  List<double> xAxisValues() {
-    List<double> points = [];
-    for (int i = 0; i < widget.data.length; i++) {
-      points.add(double.parse((widget.data[i].date.day).toString() +
-          ' ' +
-          (widget.data[i].date.month).toString() +
-          ' ' +
-          (widget.data[i].date.year).toString()));
-    }
-    return points;
-  }
-
   @override
   Widget build(BuildContext context) {
     final fromDate = widget.data[0].date; //la menor fecha
@@ -126,216 +316,192 @@ class _GraficState extends State<Grafico> {
         appBar: appBar,
         body: ListView(
           children: [
-            SizedBox(
-              height: appBar.preferredSize.height * 0.8,
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Center(
-                    child: Card(
-                      margin: EdgeInsets.all(25),
-                      child: Container(
-                        color: Colors.grey,
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width,
-                        child: BezierChart(
-                          bezierChartScale: BezierChartScale.WEEKLY,
-                          //xAxisCustomValues: xAxisValues(),
-                          fromDate: fromDate,
-                          toDate: toDate,
-                          selectedDate: toDate,
-                          series: [
-                            BezierLine(
-                              lineColor: Colors.black45,
-                              label: "Peso",
-                              onMissingValue: (_) => missingValue('peso'),
-                              data: showPeso(),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.orange,
-                              label: "Grasa",
-                              onMissingValue: (_) => missingValue('grasa'),
-                              data: showMetric('grasa'),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.red,
-                              label: "Musculo",
-                              onMissingValue: (_) => missingValue('musculo'),
-                              data: showMetric('musculo'),
-                            ),
-                          ],
-                          config: BezierChartConfig(
-                              showDataPoints: true, //muestra los puntos
-                              displayYAxis: true,
-                              stepsYAxis: 15,
-                              bubbleIndicatorLabelStyle:
-                                  TextStyle(color: Colors.black),
-                              /*backgroundGradient: LinearGradient(
-                                  colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight),*/
-                              displayLinesXAxis: true,
-                              pinchZoom: false,
-                              //xLinesColor: Colors.deepPurpleAccent,
-                              //ni idea que hacen
-                              displayDataPointWhenNoValue:
-                                  false, //esconde puntos no registrados
-                              updatePositionOnTap: true,
-                              verticalIndicatorStrokeWidth: 3.0,
-                              verticalIndicatorColor: Colors.black26,
-                              bubbleIndicatorColor: Colors.white60,
-                              bubbleIndicatorTitleStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              showVerticalIndicator: false,
-                              verticalIndicatorFixedPosition: false,
-                              backgroundColor: Colors.transparent,
-                              footerHeight: 55.0,
-                              xAxisTextStyle: TextStyle(color: Colors.black),
-                              yAxisTextStyle: TextStyle(color: Colors.black),
-                              startYAxisFromNonZeroValue: false),
-                        ),
+            Column(
+              children: [
+                Container(
+                  color: Colors.grey,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: BezierChart(
+                    bezierChartScale: BezierChartScale.WEEKLY,
+                    //xAxisCustomValues: xAxisValues(),
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    selectedDate: toDate,
+                    series: [
+                      BezierLine(
+                        lineColor: Colors.black45,
+                        label: "Peso",
+                        onMissingValue: (_) => missingValue('peso'),
+                        data: showPeso(),
                       ),
-                    ),
-                  ),
-                  Center(
-                    child: Card(
-                      margin: EdgeInsets.all(25),
-                      child: Container(
-                        color: Colors.grey,
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width,
-                        child: BezierChart(
-                          bezierChartScale: BezierChartScale.MONTHLY,
-                          //xAxisCustomValues: xAxisValues(),
-                          fromDate: fromDate,
-                          toDate: toDate,
-                          selectedDate: toDate,
-                          series: [
-                            BezierLine(
-                              lineColor: Colors.black45,
-                              label: "Peso",
-                              onMissingValue: (_) => missingValue('peso'),
-                              data: showPeso(),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.orange,
-                              label: "Grasa",
-                              onMissingValue: (_) => missingValue('grasa'),
-                              data: showMetric('grasa'),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.red,
-                              label: "Musculo",
-                              onMissingValue: (_) => missingValue('musculo'),
-                              data: showMetric('musculo'),
-                            ),
-                          ],
-                          config: BezierChartConfig(
-                              showDataPoints: true, //muestra los puntos
-                              displayYAxis: true,
-                              stepsYAxis: 15,
-                              bubbleIndicatorLabelStyle:
-                                  TextStyle(color: Colors.black),
-                              /*backgroundGradient: LinearGradient(
-                                  colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight),*/
-                              displayLinesXAxis: true,
-                              pinchZoom: false,
-                              //xLinesColor: Colors.deepPurpleAccent,
-                              //ni idea que hacen
-                              displayDataPointWhenNoValue:
-                                  false, //esconde puntos no registrados
-                              updatePositionOnTap: true,
-                              verticalIndicatorStrokeWidth: 3.0,
-                              verticalIndicatorColor: Colors.black26,
-                              bubbleIndicatorColor: Colors.white60,
-                              bubbleIndicatorTitleStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              showVerticalIndicator: false,
-                              verticalIndicatorFixedPosition: false,
-                              backgroundColor: Colors.transparent,
-                              footerHeight: 55.0,
-                              xAxisTextStyle: TextStyle(color: Colors.black),
-                              yAxisTextStyle: TextStyle(color: Colors.black),
-                              startYAxisFromNonZeroValue: false),
-                        ),
+                      BezierLine(
+                        lineColor: Colors.orange,
+                        label: "Grasa",
+                        onMissingValue: (_) => missingValue('grasa'),
+                        data: showMetric('grasa'),
                       ),
-                    ),
-                  ),
-                  Center(
-                    child: Card(
-                      margin: EdgeInsets.all(25),
-                      child: Container(
-                        color: Colors.grey,
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width,
-                        child: BezierChart(
-                          bezierChartScale: BezierChartScale.YEARLY,
-                          //xAxisCustomValues: xAxisValues(),
-                          fromDate: fromDate,
-                          toDate: toDate,
-                          selectedDate: toDate,
-                          series: [
-                            BezierLine(
-                              lineColor: Colors.black45,
-                              label: "Peso",
-                              onMissingValue: (_) => missingValue('peso'),
-                              data: showPeso(),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.orange,
-                              label: "Grasa",
-                              onMissingValue: (_) => missingValue('grasa'),
-                              data: showMetric('grasa'),
-                            ),
-                            BezierLine(
-                              lineColor: Colors.red,
-                              label: "Musculo",
-                              onMissingValue: (_) => missingValue('musculo'),
-                              data: showMetric('musculo'),
-                            ),
-                          ],
-                          config: BezierChartConfig(
-                              showDataPoints: true, //muestra los puntos
-                              displayYAxis: true,
-                              stepsYAxis: 15,
-                              bubbleIndicatorLabelStyle:
-                                  TextStyle(color: Colors.black),
-                              /*backgroundGradient: LinearGradient(
-                                  colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight),*/
-                              displayLinesXAxis: true,
-                              pinchZoom: false,
-                              //xLinesColor: Colors.deepPurpleAccent,
-                              //ni idea que hacen
-                              displayDataPointWhenNoValue:
-                                  false, //esconde puntos no registrados
-                              updatePositionOnTap: true,
-                              verticalIndicatorStrokeWidth: 3.0,
-                              verticalIndicatorColor: Colors.black26,
-                              bubbleIndicatorColor: Colors.white60,
-                              bubbleIndicatorTitleStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                              showVerticalIndicator: false,
-                              verticalIndicatorFixedPosition: false,
-                              backgroundColor: Colors.transparent,
-                              footerHeight: 55.0,
-                              xAxisTextStyle: TextStyle(color: Colors.black),
-                              yAxisTextStyle: TextStyle(color: Colors.black),
-                              startYAxisFromNonZeroValue: false),
-                        ),
+                      BezierLine(
+                        lineColor: Colors.red,
+                        label: "Músculo",
+                        onMissingValue: (_) => missingValue('musculo'),
+                        data: showMetric('musculo'),
                       ),
-                    ),
+                    ],
+                    config: BezierChartConfig(
+                        showDataPoints: true, //muestra los puntos
+                        displayYAxis: true,
+                        stepsYAxis: 15,
+                        bubbleIndicatorLabelStyle:
+                            TextStyle(color: Colors.black),
+                        /*backgroundGradient: LinearGradient(
+                        colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight),*/
+                        displayLinesXAxis: true,
+                        pinchZoom: false,
+                        //xLinesColor: Colors.deepPurpleAccent,
+                        //ni idea que hacen
+                        displayDataPointWhenNoValue:
+                            false, //esconde puntos no registrados
+                        updatePositionOnTap: true,
+                        verticalIndicatorStrokeWidth: 3.0,
+                        verticalIndicatorColor: Colors.black26,
+                        bubbleIndicatorColor: Colors.white60,
+                        bubbleIndicatorTitleStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        showVerticalIndicator: false,
+                        verticalIndicatorFixedPosition: false,
+                        backgroundColor: Colors.transparent,
+                        footerHeight: 55.0,
+                        xAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        startYAxisFromNonZeroValue: false),
                   ),
-                ],
-              ),
-            ),
+                ),
+                Container(
+                  color: Colors.grey,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: BezierChart(
+                    bezierChartScale: BezierChartScale.MONTHLY,
+                    //xAxisCustomValues: xAxisValues(),
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    selectedDate: toDate,
+                    series: [
+                      BezierLine(
+                        lineColor: Colors.black45,
+                        label: "Peso",
+                        onMissingValue: (_) => missingValue('peso'),
+                        data: dataMensual("peso"),
+                      ),
+                      BezierLine(
+                        lineColor: Colors.orange,
+                        label: "Grasa",
+                        onMissingValue: (_) => missingValue('grasa'),
+                        data: dataMensual("grasa"),
+                      ),
+                      BezierLine(
+                          lineColor: Colors.red,
+                          label: "Músculo",
+                          onMissingValue: (_) => missingValue('musculo'),
+                          data: dataMensual("musculo")),
+                    ],
+                    config: BezierChartConfig(
+                        showDataPoints: true, //muestra los puntos
+                        displayYAxis: true,
+                        stepsYAxis: 15,
+                        bubbleIndicatorLabelStyle:
+                            TextStyle(color: Colors.black),
+                        /*backgroundGradient: LinearGradient(
+                        colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight),*/
+                        displayLinesXAxis: true,
+                        pinchZoom: false,
+                        //xLinesColor: Colors.deepPurpleAccent,
+                        //ni idea que hacen
+                        displayDataPointWhenNoValue:
+                            false, //esconde puntos no registrados
+                        updatePositionOnTap: true,
+                        verticalIndicatorStrokeWidth: 3.0,
+                        verticalIndicatorColor: Colors.black26,
+                        bubbleIndicatorColor: Colors.white60,
+                        bubbleIndicatorTitleStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        showVerticalIndicator: false,
+                        verticalIndicatorFixedPosition: false,
+                        backgroundColor: Colors.transparent,
+                        footerHeight: 55.0,
+                        xAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        startYAxisFromNonZeroValue: false),
+                  ),
+                ),
+                Container(
+                  color: Colors.grey,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: BezierChart(
+                    bezierChartScale: BezierChartScale.YEARLY,
+                    //xAxisCustomValues: xAxisValues(),
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    selectedDate: toDate,
+                    series: [
+                      BezierLine(
+                        lineColor: Colors.black45,
+                        label: "Peso",
+                        onMissingValue: (_) => missingValue('peso'),
+                        data: dataAnual("peso"),
+                      ),
+                      BezierLine(
+                        lineColor: Colors.orange,
+                        label: "Grasa",
+                        onMissingValue: (_) => missingValue('grasa'),
+                        data: dataAnual('grasa'),
+                      ),
+                      BezierLine(
+                        lineColor: Colors.red,
+                        label: "Músculo",
+                        onMissingValue: (_) => missingValue('musculo'),
+                        data: dataAnual('musculo'),
+                      ),
+                    ],
+                    config: BezierChartConfig(
+                        showDataPoints: true, //muestra los puntos
+                        displayYAxis: true,
+                        stepsYAxis: 15,
+                        bubbleIndicatorLabelStyle:
+                            TextStyle(color: Colors.black),
+                        /*backgroundGradient: LinearGradient(
+                        colors: [Colors.deepPurpleAccent, Colors.deepOrangeAccent],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight),*/
+                        displayLinesXAxis: true,
+                        pinchZoom: false,
+                        //xLinesColor: Colors.deepPurpleAccent,
+                        //ni idea que hacen
+                        displayDataPointWhenNoValue:
+                            false, //esconde puntos no registrados
+                        updatePositionOnTap: true,
+                        verticalIndicatorStrokeWidth: 3.0,
+                        verticalIndicatorColor: Colors.black26,
+                        bubbleIndicatorColor: Colors.white60,
+                        bubbleIndicatorTitleStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        showVerticalIndicator: false,
+                        verticalIndicatorFixedPosition: false,
+                        backgroundColor: Colors.transparent,
+                        footerHeight: 55.0,
+                        xAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle: TextStyle(color: Colors.black),
+                        startYAxisFromNonZeroValue: false),
+                  ),
+                ),
+              ],
+            )
           ],
         ));
   }
