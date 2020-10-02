@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:progreso_corporal_app/grafico.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
@@ -20,6 +21,19 @@ class _HistorialState extends State<Historial> {
   String peso;
   DateTime date;
   File image;
+  /*var valorGuardado;
+
+  Future obtenerPreferencias() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      valorGuardado = preferences.get("historial") ?? "showHistorial";
+    });
+  }
+
+  guardarPreferencias() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    valorGuardado = preferences.set("historial", data);
+  }*/
 
   void add() {
     if (data.isEmpty) {

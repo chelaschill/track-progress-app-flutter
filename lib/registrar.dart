@@ -8,10 +8,6 @@ import 'package:progreso_corporal_app/historial.dart';
 class Registro extends StatefulWidget {
   static const routeName = 'registro-screen';
 
-  /*final data;
-
-  Registro(this.data);*/
-
   @override
   _RegistroState createState() => _RegistroState();
 }
@@ -136,9 +132,30 @@ class _RegistroState extends State<Registro> {
                 child: const Text("REEMPLAZAR"),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pop(
-                    [peso, grasa, musculo, currDate, image, _save],
-                  );
+                  if (double.tryParse(grasa.toString()) != null &&
+                      double.tryParse(musculo.toString()) != null) {
+                    Navigator.of(context).pop(
+                      [peso, grasa, musculo, currDate, image, _save],
+                    );
+                  } else if (double.tryParse(grasa.toString()) == null &&
+                      double.tryParse(musculo.toString()) != null) {
+                    print("WTF1");
+                    Navigator.of(context).pop(
+                      [peso, null, musculo, currDate, image, _save],
+                    );
+                  } else if (double.tryParse(grasa.toString()) != null &&
+                      double.tryParse(musculo.toString()) == null) {
+                    print("este2");
+                    Navigator.of(context).pop(
+                      [peso, grasa, null, currDate, image, _save],
+                    );
+                  } else if (double.tryParse(grasa.toString()) == null &&
+                      double.tryParse(musculo.toString()) == null) {
+                    print("WTF2");
+                    Navigator.of(context).pop(
+                      [peso, null, null, currDate, image, _save],
+                    );
+                  }
                 },
               ),
             ],
@@ -147,9 +164,30 @@ class _RegistroState extends State<Registro> {
       );
     }
     if (!repetido || data.isEmpty) {
-      Navigator.of(context).pop(
-        [peso, grasa, musculo, currDate, image, _save],
-      );
+      if (double.tryParse(grasa.toString()) != null &&
+          double.tryParse(musculo.toString()) != null) {
+        Navigator.of(context).pop(
+          [peso, grasa, musculo, currDate, image, _save],
+        );
+      } else if (double.tryParse(grasa.toString()) == null &&
+          double.tryParse(musculo.toString()) != null) {
+        print("WTF1");
+        Navigator.of(context).pop(
+          [peso, null, musculo, currDate, image, _save],
+        );
+      } else if (double.tryParse(grasa.toString()) != null &&
+          double.tryParse(musculo.toString()) == null) {
+        print("este2");
+        Navigator.of(context).pop(
+          [peso, grasa, null, currDate, image, _save],
+        );
+      } else if (double.tryParse(grasa.toString()) == null &&
+          double.tryParse(musculo.toString()) == null) {
+        print("WTF2");
+        Navigator.of(context).pop(
+          [peso, null, null, currDate, image, _save],
+        );
+      }
     }
   }
 
@@ -278,7 +316,6 @@ class _RegistroState extends State<Registro> {
                                   return 'Valor inválido';
                                 }
                               }
-
                               return null;
                             },
                           ),

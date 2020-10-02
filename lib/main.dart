@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-import 'package:progreso_corporal_app/grafico.dart';
 
 import 'package:progreso_corporal_app/historial.dart';
-import 'package:progreso_corporal_app/registrar.dart';
 
 void main() => runApp(MazetaApp());
 
