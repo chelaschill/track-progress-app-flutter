@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:path/path.dart' as path;
-import 'package:sqflite/sqflite.dart';
 
 import 'package:progreso_corporal_app/historial.dart';
+import 'package:progreso_corporal_app/widgets/metrics.dart';
+import 'package:progreso_corporal_app/database.dart';
 
 class Registro extends StatefulWidget {
   static const routeName = 'registro-screen';
@@ -16,9 +17,12 @@ class Registro extends StatefulWidget {
 }
 
 class _RegistroState extends State<Registro> {
+  HistorialDB _historialDB = HistorialDB();
+  //Future<List<Metrics>> _historialData;
   final _form = GlobalKey<FormState>();
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
+
   bool _save;
   DateTime currDate;
   File image;
@@ -26,7 +30,6 @@ class _RegistroState extends State<Registro> {
   String grasa;
   String musculo;
   int reemplazar;
-  File _pickedImage;
   Function onSelectImage;
   TextEditingController pcontroller = TextEditingController();
   TextEditingController gcontroller = TextEditingController();
@@ -34,9 +37,17 @@ class _RegistroState extends State<Registro> {
 
   @override
   void initState() {
-    super.initState();
+    /*_historialDB.initializeDatabase().then((value) {
+      loadHistorial();
+    });*/
     currDate = DateTime.now();
+    super.initState();
   }
+
+  /*void loadHistorial() {
+    _historialData = _historialDB.getHistorialData();
+    if (mounted) setState(() {});
+  }*/
 
   @override
   void dispose() {
@@ -77,10 +88,6 @@ class _RegistroState extends State<Registro> {
     final savedImage =
         await File(pickedFile.path).copy('${appDir.path}/$fileName');
     onSelectImage(savedImage);
-  }
-
-  void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
   }
 
   createAlertDialog(BuildContext context) {
@@ -431,7 +438,14 @@ class _RegistroState extends State<Registro> {
                     height: 50,
                     child: RaisedButton(
                       elevation: 10,
-                      onPressed: () {
+                      onPressed: () async {
+                        var metrics = Metrics(
+                            peso: peso,
+                            grasa: grasa,
+                            musculo: musculo,
+                            date: currDate,
+                            image: image);
+                        _historialDB.insertData(metrics);
                         saveMetrics(context);
                       },
                       child: Text(
