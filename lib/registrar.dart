@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:path/path.dart' as path;
+import 'package:sqflite/sqflite.dart';
 
 import 'package:progreso_corporal_app/historial.dart';
 
@@ -23,6 +26,8 @@ class _RegistroState extends State<Registro> {
   String grasa;
   String musculo;
   int reemplazar;
+  File _pickedImage;
+  Function onSelectImage;
   TextEditingController pcontroller = TextEditingController();
   TextEditingController gcontroller = TextEditingController();
   TextEditingController mcontroller = TextEditingController();
@@ -55,18 +60,27 @@ class _RegistroState extends State<Registro> {
     }
   }
 
-  void _pickFromGallery() async {
+  Future _pickFromGallery() async {
     PickedFile pickedFile =
         await ImagePicker().getImage(source: ImageSource.gallery);
     image = File(pickedFile.path);
     setState(() {});
   }
 
-  void _takePicture() async {
+  Future _takePicture() async {
     PickedFile pickedFile =
         await ImagePicker().getImage(source: ImageSource.camera);
     image = File(pickedFile.path);
     setState(() {});
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    final fileName = path.basename(pickedFile.path);
+    final savedImage =
+        await File(pickedFile.path).copy('${appDir.path}/$fileName');
+    onSelectImage(savedImage);
+  }
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
   }
 
   createAlertDialog(BuildContext context) {
@@ -139,19 +153,16 @@ class _RegistroState extends State<Registro> {
                     );
                   } else if (double.tryParse(grasa.toString()) == null &&
                       double.tryParse(musculo.toString()) != null) {
-                    print("WTF1");
                     Navigator.of(context).pop(
                       [peso, null, musculo, currDate, image, _save],
                     );
                   } else if (double.tryParse(grasa.toString()) != null &&
                       double.tryParse(musculo.toString()) == null) {
-                    print("este2");
                     Navigator.of(context).pop(
                       [peso, grasa, null, currDate, image, _save],
                     );
                   } else if (double.tryParse(grasa.toString()) == null &&
                       double.tryParse(musculo.toString()) == null) {
-                    print("WTF2");
                     Navigator.of(context).pop(
                       [peso, null, null, currDate, image, _save],
                     );
@@ -171,19 +182,16 @@ class _RegistroState extends State<Registro> {
         );
       } else if (double.tryParse(grasa.toString()) == null &&
           double.tryParse(musculo.toString()) != null) {
-        print("WTF1");
         Navigator.of(context).pop(
           [peso, null, musculo, currDate, image, _save],
         );
       } else if (double.tryParse(grasa.toString()) != null &&
           double.tryParse(musculo.toString()) == null) {
-        print("este2");
         Navigator.of(context).pop(
           [peso, grasa, null, currDate, image, _save],
         );
       } else if (double.tryParse(grasa.toString()) == null &&
           double.tryParse(musculo.toString()) == null) {
-        print("WTF2");
         Navigator.of(context).pop(
           [peso, null, null, currDate, image, _save],
         );

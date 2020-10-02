@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:progreso_corporal_app/grafico.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
