@@ -109,6 +109,14 @@ class HistorialDB {
     return quotes.toList();
   }
 
+  Future<List<Metrics>> selectAllQuotesGraph() async {
+    Database db = await this.database;
+    var result = await db
+        .rawQuery('SELECT * FROM $tableHistorial ORDER BY $columnDate ASC');
+    var quotes = result.map((qAsMap) => Metrics.fromMap(qAsMap));
+    return quotes.toList();
+  }
+
   Future<List<Metrics>> sortByDate() async {
     List<Map> results =
         await _db.query(tableHistorial, orderBy: "$columnDateInteger DESC");

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'package:progreso_corporal_app/widgets/metrics.dart';
 import 'package:progreso_corporal_app/database.dart';
-import 'package:progreso_corporal_app/historial.dart';
+import 'package:progreso_corporal_app/widgets/metrics.dart';
 
 class Grafico extends StatefulWidget {
   static const routeName = 'grafico-screen';
+
+  final List<Metrics> data;
+
+  Grafico(this.data);
 
   @override
   _GraficState createState() => _GraficState();
@@ -21,10 +24,11 @@ class _GraficState extends State<Grafico> {
     double promedio;
     int contador = 0;
     if (medida == 'grasa') {
-      for (int i = 0; i < data.length; i++) {
-        if (data[i].grasa != null) {
-          suma +=
-              double.parse(data[i].grasa) * 0.01 * double.parse(data[i].peso);
+      for (int i = 0; i < widget.data.length; i++) {
+        if (widget.data[i].grasa != null) {
+          suma += double.parse(widget.data[i].grasa) *
+              0.01 *
+              double.parse(widget.data[i].peso);
           contador++;
         }
       }
@@ -34,10 +38,11 @@ class _GraficState extends State<Grafico> {
       promedio = suma / contador;
       return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
     } else if (medida == 'musculo') {
-      for (int i = 0; i < data.length; i++) {
-        if (data[i].musculo != null) {
-          suma +=
-              double.parse(data[i].musculo) * 0.01 * double.parse(data[i].peso);
+      for (int i = 0; i < widget.data.length; i++) {
+        if (widget.data[i].musculo != null) {
+          suma += double.parse(widget.data[i].musculo) *
+              0.01 *
+              double.parse(widget.data[i].peso);
           contador++;
         }
       }
@@ -47,24 +52,24 @@ class _GraficState extends State<Grafico> {
       promedio = suma / contador;
       return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
     } else if (medida == 'peso') {
-      for (int i = 0; i < data.length; i++) {
-        if (data[i].peso != null) {
-          suma += double.parse(data[i].peso);
+      for (int i = 0; i < widget.data.length; i++) {
+        if (widget.data[i].peso != null) {
+          suma += double.parse(widget.data[i].peso);
         }
       }
-      promedio = suma / data.length;
+      promedio = suma / widget.data.length;
       return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
     }
   }
 
   List<DataPoint<DateTime>> showPeso() {
     List<DataPoint<DateTime>> points = [];
-    for (int i = 0; i < data.length; i++) {
-      if (!points.contains(data[i].date)) {
+    for (int i = 0; i < widget.data.length; i++) {
+      if (!points.contains(widget.data[i].date)) {
         points.add(DataPoint<DateTime>(
-            value:
-                double.parse((double.parse(data[i].peso).toStringAsFixed(2))),
-            xAxis: data[i].date));
+            value: double.parse(
+                (double.parse(widget.data[i].peso).toStringAsFixed(2))),
+            xAxis: widget.data[i].date));
       }
     }
     return points;
@@ -73,8 +78,8 @@ class _GraficState extends State<Grafico> {
   List<DataPoint<DateTime>> dataMensual(String medida) {
     List<DataPoint<DateTime>> mensual = [];
 
-    int mesInicial = data[0].date.month;
-    int mesFinal = data[data.length - 1].date.month;
+    int mesInicial = widget.data[0].date.month;
+    int mesFinal = widget.data[widget.data.length - 1].date.month;
 
     if (medida == 'peso') {
       for (int i = mesInicial; i <= mesFinal; i++) {
@@ -82,17 +87,17 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.month == i) {
-            suma += double.parse(data[j].peso);
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i) {
+            suma += double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.month > i) {
+          } else if (widget.data[j].date.month > i) {
             break;
           }
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.month == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
             index = k;
             break;
           }
@@ -100,7 +105,7 @@ class _GraficState extends State<Grafico> {
         mensual.add(
           DataPoint<DateTime>(
               value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: data[index].date),
+              xAxis: widget.data[index].date),
         );
       }
       return mensual;
@@ -110,12 +115,13 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.month == i && data[j].grasa != null) {
-            suma +=
-                double.parse(data[j].grasa) * 0.01 * double.parse(data[j].peso);
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i && widget.data[j].grasa != null) {
+            suma += double.parse(widget.data[j].grasa) *
+                0.01 *
+                double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.month > i) {
+          } else if (widget.data[j].date.month > i) {
             break;
           }
         }
@@ -123,15 +129,15 @@ class _GraficState extends State<Grafico> {
           return mensual;
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.month == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
             index = k;
             break;
           }
         }
         mensual.add(DataPoint<DateTime>(
             value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: data[index].date));
+            xAxis: widget.data[index].date));
       }
       return mensual;
     } else if (medida == 'musculo') {
@@ -140,13 +146,14 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.month == i && data[j].musculo != null) {
-            suma += double.parse(data[j].musculo) *
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.month == i &&
+              widget.data[j].musculo != null) {
+            suma += double.parse(widget.data[j].musculo) *
                 0.01 *
-                double.parse(data[j].peso);
+                double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.month > i) {
+          } else if (widget.data[j].date.month > i) {
             break;
           }
         }
@@ -154,8 +161,8 @@ class _GraficState extends State<Grafico> {
           return mensual;
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.month == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.month == i) {
             index = k;
             break;
           }
@@ -163,7 +170,7 @@ class _GraficState extends State<Grafico> {
         mensual.add(
           DataPoint<DateTime>(
               value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: data[index].date),
+              xAxis: widget.data[index].date),
         );
       }
       return mensual;
@@ -173,8 +180,8 @@ class _GraficState extends State<Grafico> {
   List<DataPoint<DateTime>> dataAnual(String medida) {
     List<DataPoint<DateTime>> anual = [];
 
-    int anioInicial = data[0].date.year;
-    int anioFinal = data[data.length - 1].date.year;
+    int anioInicial = widget.data[0].date.year;
+    int anioFinal = widget.data[widget.data.length - 1].date.year;
 
     if (medida == 'peso') {
       for (int i = anioInicial; i <= anioFinal; i++) {
@@ -182,24 +189,24 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.year == i) {
-            suma += double.parse(data[j].peso);
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i) {
+            suma += double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.year > i) {
+          } else if (widget.data[j].date.year > i) {
             break;
           }
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.year == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
             index = k;
             break;
           }
         }
         anual.add(DataPoint<DateTime>(
             value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: data[index].date));
+            xAxis: widget.data[index].date));
       }
       return anual;
     } else if (medida == 'grasa') {
@@ -208,12 +215,13 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.year == i && data[j].grasa != null) {
-            suma +=
-                double.parse(data[j].grasa) * 0.01 * double.parse(data[j].peso);
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i && widget.data[j].grasa != null) {
+            suma += double.parse(widget.data[j].grasa) *
+                0.01 *
+                double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.year > i) {
+          } else if (widget.data[j].date.year > i) {
             break;
           }
         }
@@ -221,15 +229,15 @@ class _GraficState extends State<Grafico> {
           return anual;
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.year == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
             index = k;
             break;
           }
         }
         anual.add(DataPoint<DateTime>(
             value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: data[index].date));
+            xAxis: widget.data[index].date));
       }
       return anual;
     } else if (medida == 'musculo') {
@@ -238,13 +246,13 @@ class _GraficState extends State<Grafico> {
         double suma = 0;
         double promedio = 0;
         int index = 0;
-        for (int j = 0; j < data.length; j++) {
-          if (data[j].date.year == i && data[j].musculo != null) {
-            suma += double.parse(data[j].musculo) *
+        for (int j = 0; j < widget.data.length; j++) {
+          if (widget.data[j].date.year == i && widget.data[j].musculo != null) {
+            suma += double.parse(widget.data[j].musculo) *
                 0.01 *
-                double.parse(data[j].peso);
+                double.parse(widget.data[j].peso);
             contador++;
-          } else if (data[j].date.year > i) {
+          } else if (widget.data[j].date.year > i) {
             break;
           }
         }
@@ -252,8 +260,8 @@ class _GraficState extends State<Grafico> {
           return anual;
         }
         promedio = suma / contador;
-        for (int k = 0; k < data.length; k++) {
-          if (data[k].date.year == i) {
+        for (int k = 0; k < widget.data.length; k++) {
+          if (widget.data[k].date.year == i) {
             index = k;
             break;
           }
@@ -261,7 +269,7 @@ class _GraficState extends State<Grafico> {
         anual.add(
           DataPoint<DateTime>(
               value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: data[index].date),
+              xAxis: widget.data[index].date),
         );
       }
       return anual;
@@ -271,36 +279,36 @@ class _GraficState extends State<Grafico> {
   List<DataPoint<DateTime>> showMetric(String medida) {
     List<DataPoint<DateTime>> points = [];
     if (medida == 'grasa') {
-      for (int i = 0; i < data.length; i++) {
+      for (int i = 0; i < widget.data.length; i++) {
         var bandera = false;
-        if (data[i].grasa == null) {
+        if (widget.data[i].grasa == null) {
           bandera = true;
         }
-        if (!points.contains(data[i].date)) {
+        if (!points.contains(widget.data[i].date)) {
           if (!bandera) {
             points.add(DataPoint<DateTime>(
-                value: double.parse((double.parse(data[i].grasa) *
+                value: double.parse((double.parse(widget.data[i].grasa) *
                         0.01 *
-                        double.parse(data[i].peso))
+                        double.parse(widget.data[i].peso))
                     .toStringAsFixed(2)),
-                xAxis: data[i].date));
+                xAxis: widget.data[i].date));
           }
         }
       }
     } else if (medida == 'musculo') {
-      for (int i = 0; i < data.length; i++) {
+      for (int i = 0; i < widget.data.length; i++) {
         var bandera = false;
-        if (data[i].musculo == null) {
+        if (widget.data[i].musculo == null) {
           bandera = true;
         }
-        if (!points.contains(data[i].date)) {
+        if (!points.contains(widget.data[i].date)) {
           if (!bandera) {
             points.add(DataPoint<DateTime>(
-                value: double.parse((double.parse(data[i].musculo) *
+                value: double.parse((double.parse(widget.data[i].musculo) *
                         0.01 *
-                        double.parse(data[i].peso))
+                        double.parse(widget.data[i].peso))
                     .toStringAsFixed(2)),
-                xAxis: data[i].date));
+                xAxis: widget.data[i].date));
           }
         }
       }
@@ -310,8 +318,8 @@ class _GraficState extends State<Grafico> {
 
   List<double> xAxisValues() {
     List<double> points = [];
-    for (int i = 0; i < data.length; i++) {
-      points.add(double.parse((data[i].date.month).toString()));
+    for (int i = 0; i < widget.data.length; i++) {
+      points.add(double.parse((widget.data[i].date.month).toString()));
     }
     return points;
   }
@@ -425,14 +433,13 @@ class _GraficState extends State<Grafico> {
         }
       }
     }
-
     return lines;
   }
 
   @override
   Widget build(BuildContext context) {
-    final fromDate = data[0].date; //la menor fecha
-    final toDate = data[data.length - 1].date; // la maxima fecha
+    final fromDate = widget.data[0].date; //la menor fecha
+    final toDate = widget.data[widget.data.length - 1].date; // la maxima fecha
     final appBar = AppBar(
       title: Text('Gráfico'),
     );
@@ -458,12 +465,9 @@ class _GraficState extends State<Grafico> {
                       final newFormat = intl.DateFormat('dd/MM');
                       return newFormat.format(value);
                     },
-                    /*footerValueBuilder: (double value) {
-                      return "${value.toInt()}\nHrs";
-                    },*/
-                    series: showLines("weekly"), //showLines("weekly"),
+                    series: showLines("weekly"),
                     config: BezierChartConfig(
-                        showDataPoints: true, //muestra los puntos
+                        showDataPoints: true,
                         displayYAxis: true,
                         stepsYAxis: 15,
                         bubbleIndicatorLabelStyle:

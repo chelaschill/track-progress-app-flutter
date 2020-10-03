@@ -19,7 +19,6 @@ class Registro extends StatefulWidget {
 
 class _RegistroState extends State<Registro> {
   HistorialDB _historialDB = HistorialDB();
-  //Future<List<Metrics>> _historialData;
   final _form = GlobalKey<FormState>();
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
@@ -131,7 +130,7 @@ class _RegistroState extends State<Registro> {
 
     final dateParseada = intl.DateFormat('dd/MM/yyyy');
     final total = dateParseada.format(currDate);
-    for (int i = 0; i < data.length; i++) {
+    /*for (int i = 0; i < data.length; i++) {
       if (data[i].date.day == currDate.day &&
           data[i].date.month == currDate.month &&
           data[i].date.year == currDate.year) {
@@ -139,7 +138,7 @@ class _RegistroState extends State<Registro> {
         reemplazar = i;
         break;
       }
-    }
+    }*/
 
     if (repetido) {
       showDialog(
@@ -211,10 +210,10 @@ class _RegistroState extends State<Registro> {
         },
       );
     }
-    if (!repetido || data.isEmpty) {
+    if (!repetido) {
+      //|| data.isEmpty
       if (double.tryParse(grasa.toString()) != null &&
           double.tryParse(musculo.toString()) != null) {
-        print("ASI ES");
         var metrics = Metrics(
           peso: peso,
           grasa: grasa,

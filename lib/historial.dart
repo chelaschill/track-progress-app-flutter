@@ -16,7 +16,7 @@ List<Metrics> data = [];
 
 class _HistorialState extends State<Historial> {
   HistorialDB _historialDB = HistorialDB();
-  bool accesoGrafico = false;
+  int accesoGrafico = 0;
   bool save = false;
   String grasa;
   String musculo;
@@ -61,6 +61,8 @@ class _HistorialState extends State<Historial> {
 
   @override
   Widget build(BuildContext context) {
+    data = [];
+    accesoGrafico = 0;
     final appBar = AppBar(
       title: Text('Historial'),
       actions: [
@@ -92,29 +94,37 @@ class _HistorialState extends State<Historial> {
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (accesoGrafico) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Grafico(),
-                ));
-          } else {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text(
-                      "No hay suficientes datos para mostrar un gráfico",
-                    ),
-                    actions: [
-                      FlatButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("OK"),
-                      )
-                    ],
-                  );
-                });
-          }
+          _historialDB.selectAllQuotesGraph().then(
+            (value) {
+              for (int i = 0; i < value.length; i++) {
+                data.add(value[i]);
+              }
+              if (data.length > 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Grafico(data),
+                  ),
+                );
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text(
+                          "No hay suficientes datos para mostrar un gráfico",
+                        ),
+                        actions: [
+                          FlatButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text("OK"),
+                          )
+                        ],
+                      );
+                    });
+              }
+            },
+          );
         },
         child: Icon(
           Icons.insert_chart,
@@ -125,14 +135,14 @@ class _HistorialState extends State<Historial> {
         future: _historialDB.selectAllQuotes(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            accesoGrafico = false;
+            accesoGrafico = 0;
             return Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(Colors.orange),
               ),
             );
           } else if (snapshot.data.length == 0) {
-            accesoGrafico = false;
+            accesoGrafico = 0;
             return Center(
               child: Text(
                 'No hay datos',
@@ -140,7 +150,6 @@ class _HistorialState extends State<Historial> {
               ),
             );
           } else {
-            accesoGrafico = true;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data.length,
