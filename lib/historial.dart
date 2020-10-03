@@ -124,7 +124,7 @@ class _HistorialState extends State<Historial> {
         backgroundColor: Colors.indigo,
       ),
       body: FutureBuilder(
-        future: _historialDB.getHistorialData(),
+        future: _historialDB.selectAllQuotes(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(
