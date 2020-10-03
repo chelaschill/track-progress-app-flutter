@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,12 +11,11 @@ final String columnPeso = 'peso';
 final String columnGrasa = 'grasa';
 final String columnMusculo = 'musculo';
 final String columnDate = 'date';
-final String columnImagen = 'imagen';
+final String columnImagen = 'imageName';
 
 class HistorialDB {
   static Database _database;
   static HistorialDB _historialDB;
-  Database _db;
 
   HistorialDB._createInstance();
   factory HistorialDB() {
@@ -47,13 +46,13 @@ class HistorialDB {
           $columnGrasa text,
           $columnMusculo text,
           $columnDate text,
+          $columnImagen text,
           $columnDateString text primary key)
         ''');
       },
     );
     return database;
   }
-  //$columnDateString text primary key
 
   Future<int> insertData(Metrics metrics) async {
     var db = await database;
@@ -69,7 +68,6 @@ class HistorialDB {
       var alarmInfo = Metrics.fromMap(element);
       _historial.add(alarmInfo);
     });
-
     return _historial;
   }
 

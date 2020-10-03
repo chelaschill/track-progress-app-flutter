@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:progreso_corporal_app/historial.dart';
 
-void main() => runApp(MazetaApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(MazetaApp());
+}
 
 class MazetaApp extends StatefulWidget {
   @override

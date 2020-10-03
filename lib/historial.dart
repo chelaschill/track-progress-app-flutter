@@ -295,7 +295,7 @@ class _HistorialState extends State<Historial> {
                           ],
                         ),
                       ),
-                      item.image == null
+                      item.imageName == null
                           ? Expanded(
                               child: Center(
                                 child: Container(
@@ -314,7 +314,7 @@ class _HistorialState extends State<Historial> {
                                 child: ListView(
                                   children: [
                                     Image.file(
-                                      data[index].image,
+                                      File(item.imageName),
                                       fit: BoxFit.fill,
                                     ),
                                   ],

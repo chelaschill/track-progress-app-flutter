@@ -17,6 +17,7 @@ class Metrics {
   final String musculo;
   final DateTime date;
   final File image;
+  final String imageName;
   final String dateString;
 
   Metrics({
@@ -26,6 +27,7 @@ class Metrics {
     this.date,
     this.image,
     this.dateString,
+    this.imageName,
   });
 
   factory Metrics.fromMap(Map<String, dynamic> json) => Metrics(
@@ -36,6 +38,7 @@ class Metrics {
           json["date"],
         ),
         dateString: json["dateString"],
+        imageName: json["imageName"],
       );
   Map<String, dynamic> toMap() => {
         "peso": peso,
@@ -43,5 +46,6 @@ class Metrics {
         "musculo": musculo,
         "date": date.toIso8601String(),
         "dateString": dateString,
+        "imageName": imageName,
       };
 }

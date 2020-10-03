@@ -64,22 +64,27 @@ class _RegistroState extends State<Registro> {
   }
 
   Future _pickFromGallery() async {
-    PickedFile pickedFile =
+    PickedFile imageFile =
         await ImagePicker().getImage(source: ImageSource.gallery);
-    image = File(pickedFile.path);
-    setState(() {});
+    setState(() {
+      image = File(imageFile.path);
+    });
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    final fileName = path.basename(imageFile.path);
+    final savedImage = await image.copy('${appDir.path}/$fileName');
+    image = savedImage;
   }
 
   Future _takePicture() async {
-    PickedFile pickedFile =
+    PickedFile imageFile =
         await ImagePicker().getImage(source: ImageSource.camera);
-    image = File(pickedFile.path);
-    setState(() {});
+    setState(() {
+      image = File(imageFile.path);
+    });
     final appDir = await syspaths.getApplicationDocumentsDirectory();
-    final fileName = path.basename(pickedFile.path);
-    final savedImage =
-        await File(pickedFile.path).copy('${appDir.path}/$fileName');
-    onSelectImage(savedImage);
+    final fileName = path.basename(imageFile.path);
+    final savedImage = await image.copy('${appDir.path}/$fileName');
+    image = savedImage;
   }
 
   createAlertDialog(BuildContext context) {
@@ -193,50 +198,79 @@ class _RegistroState extends State<Registro> {
 
     if (double.tryParse(grasa.toString()) != null &&
         double.tryParse(musculo.toString()) != null) {
-      var metrics = Metrics(
-        peso: peso,
-        grasa: grasa,
-        musculo: musculo,
-        date: currDate,
-        image: image,
-        dateString: total,
-      );
+      var metrics = image == null
+          ? Metrics(
+              peso: peso,
+              grasa: grasa,
+              musculo: musculo,
+              date: currDate,
+              dateString: total,
+            )
+          : Metrics(
+              peso: peso,
+              grasa: grasa,
+              musculo: musculo,
+              date: currDate,
+              imageName: image.path,
+              dateString: total,
+            );
       _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
       });
     } else if (double.tryParse(grasa.toString()) == null &&
         double.tryParse(musculo.toString()) != null) {
-      var metrics = Metrics(
-          peso: peso,
-          grasa: null,
-          musculo: musculo,
-          date: currDate,
-          image: image,
-          dateString: total);
+      var metrics = image == null
+          ? Metrics(
+              peso: peso,
+              grasa: null,
+              musculo: musculo,
+              date: currDate,
+              dateString: total)
+          : Metrics(
+              peso: peso,
+              grasa: null,
+              musculo: musculo,
+              date: currDate,
+              imageName: image.path,
+              dateString: total);
       _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
       });
     } else if (double.tryParse(grasa.toString()) != null &&
         double.tryParse(musculo.toString()) == null) {
-      var metrics = Metrics(
-          peso: peso,
-          grasa: grasa,
-          musculo: null,
-          date: currDate,
-          image: image,
-          dateString: total);
+      var metrics = image == null
+          ? Metrics(
+              peso: peso,
+              grasa: grasa,
+              musculo: null,
+              date: currDate,
+              dateString: total)
+          : Metrics(
+              peso: peso,
+              grasa: grasa,
+              musculo: null,
+              date: currDate,
+              imageName: image.path,
+              dateString: total);
       _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
       });
     } else if (double.tryParse(grasa.toString()) == null &&
         double.tryParse(musculo.toString()) == null) {
-      var metrics = Metrics(
-          peso: peso,
-          grasa: null,
-          musculo: null,
-          date: currDate,
-          image: image,
-          dateString: total);
+      var metrics = image == null
+          ? Metrics(
+              peso: peso,
+              grasa: null,
+              musculo: null,
+              date: currDate,
+              dateString: total)
+          : Metrics(
+              peso: peso,
+              grasa: null,
+              musculo: null,
+              date: currDate,
+              imageName: image.path,
+              dateString: total);
       _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
       });
