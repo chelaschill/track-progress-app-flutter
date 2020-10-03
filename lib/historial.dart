@@ -16,6 +16,7 @@ List<Metrics> data = [];
 
 class _HistorialState extends State<Historial> {
   HistorialDB _historialDB = HistorialDB();
+  bool accesoGrafico = false;
   bool save = false;
   String grasa;
   String musculo;
@@ -26,9 +27,6 @@ class _HistorialState extends State<Historial> {
   @override
   void initState() {
     _historialDB.initializeDatabase();
-    _historialDB.selectAllQuotes().then((value) {
-      print(value[0].dateString);
-    });
     super.initState();
   }
 
@@ -94,7 +92,7 @@ class _HistorialState extends State<Historial> {
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (0 > 1) {
+          if (accesoGrafico) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -126,13 +124,15 @@ class _HistorialState extends State<Historial> {
       body: FutureBuilder(
         future: _historialDB.selectAllQuotes(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
+            accesoGrafico = false;
             return Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(Colors.orange),
               ),
             );
-          else if (snapshot.data.length == 0) {
+          } else if (snapshot.data.length == 0) {
+            accesoGrafico = false;
             return Center(
               child: Text(
                 'No hay datos',
@@ -140,6 +140,7 @@ class _HistorialState extends State<Historial> {
               ),
             );
           } else {
+            accesoGrafico = true;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data.length,
