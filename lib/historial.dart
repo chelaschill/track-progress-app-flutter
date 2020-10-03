@@ -16,7 +16,6 @@ List<Metrics> data = [];
 
 class _HistorialState extends State<Historial> {
   HistorialDB _historialDB = HistorialDB();
-  int accesoGrafico = 0;
   bool save = false;
   String grasa;
   String musculo;
@@ -27,6 +26,7 @@ class _HistorialState extends State<Historial> {
   @override
   void initState() {
     _historialDB.initializeDatabase();
+    data = [];
     super.initState();
   }
 
@@ -61,8 +61,6 @@ class _HistorialState extends State<Historial> {
 
   @override
   Widget build(BuildContext context) {
-    data = [];
-    accesoGrafico = 0;
     final appBar = AppBar(
       title: Text('Historial'),
       actions: [
@@ -85,15 +83,11 @@ class _HistorialState extends State<Historial> {
       ],
     );
 
-    /*if (save) {
-      add();
-      data.sort((a, b) => a.date.compareTo(b.date));
-    }*/
-
     return Scaffold(
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          data = [];
           _historialDB.selectAllQuotesGraph().then(
             (value) {
               for (int i = 0; i < value.length; i++) {
@@ -108,20 +102,21 @@ class _HistorialState extends State<Historial> {
                 );
               } else {
                 showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text(
-                          "No hay suficientes datos para mostrar un gráfico",
-                        ),
-                        actions: [
-                          FlatButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text("OK"),
-                          )
-                        ],
-                      );
-                    });
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text(
+                        "No hay suficientes datos para mostrar un gráfico",
+                      ),
+                      actions: [
+                        FlatButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("OK"),
+                        )
+                      ],
+                    );
+                  },
+                );
               }
             },
           );
@@ -135,14 +130,12 @@ class _HistorialState extends State<Historial> {
         future: _historialDB.selectAllQuotes(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            accesoGrafico = 0;
             return Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(Colors.orange),
               ),
             );
           } else if (snapshot.data.length == 0) {
-            accesoGrafico = 0;
             return Center(
               child: Text(
                 'No hay datos',
