@@ -6,15 +6,15 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
 
 final String tableHistorial = 'historial';
+final String columnDateString = 'dateString';
 final String columnPeso = 'peso';
 final String columnGrasa = 'grasa';
 final String columnMusculo = 'musculo';
 final String columnDate = 'date';
-//final String columnImagen = 'imagen';
+final String columnDateInteger = 'dateInteger';
+final String columnImagen = 'imagen';
 
 class HistorialDB {
-  //static final HistorialDB db = HistorialDB();
-
   static Database _database;
   static HistorialDB _historialDB;
   Database _db;
@@ -47,12 +47,15 @@ class HistorialDB {
           $columnPeso text, 
           $columnGrasa text,
           $columnMusculo text,
-          $columnDate text primary key)
+          $columnDate text,
+          $columnDateString text primary key,
+          $columnDateInteger integer)
         ''');
       },
     );
     return database;
   }
+  //$columnDateString text primary key
 
   Future<int> insertData(Metrics metrics) async {
     var db = await database;
@@ -81,7 +84,7 @@ class HistorialDB {
   Future<int> update(Metrics metrics) async {
     var db = await this.database;
     return await db.update(tableHistorial, metrics.toMap(),
-        where: '$columnDate = ?', whereArgs: [metrics.date.toIso8601String()]);
+        where: '$columnDateString = ?', whereArgs: [metrics.dateString]);
   }
 
   Future insertOrUpdate(Metrics metrics) async {
@@ -93,21 +96,22 @@ class HistorialDB {
     var db = await this.database;
     /*var result = await db
         .rawQuery("SELECT * FROM $tableHistorial ORDER BY $columnDate ASC");*/
-    var result2 = await db.query(tableHistorial, orderBy: '$columnDate ASC');
+    var result2 =
+        await db.query(tableHistorial, orderBy: '$columnDateInteger DESC');
     return result2;
   }
 
   Future<List<Metrics>> selectAllQuotes() async {
     Database db = await this.database;
     var result = await db
-        .rawQuery('SELECT * FROM $tableHistorial ORDER BY $columnDate ASC');
+        .rawQuery('SELECT * FROM $tableHistorial ORDER BY $columnDate DESC');
     var quotes = result.map((qAsMap) => Metrics.fromMap(qAsMap));
     return quotes.toList();
   }
 
   Future<List<Metrics>> sortByDate() async {
     List<Map> results =
-        await _db.query(tableHistorial, orderBy: "$columnDate DESC");
+        await _db.query(tableHistorial, orderBy: "$columnDateInteger DESC");
 
     List<Metrics> metrics = List();
     results.forEach((result) {

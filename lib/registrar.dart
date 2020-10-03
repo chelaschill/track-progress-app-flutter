@@ -129,6 +129,8 @@ class _RegistroState extends State<Registro> {
     }
     _save = true;
 
+    final dateParseada = intl.DateFormat('dd/MM/yyyy');
+    final total = dateParseada.format(currDate);
     for (int i = 0; i < data.length; i++) {
       if (data[i].date.day == currDate.day &&
           data[i].date.month == currDate.month &&
@@ -163,7 +165,8 @@ class _RegistroState extends State<Registro> {
                         grasa: grasa,
                         musculo: musculo,
                         date: currDate,
-                        image: image);
+                        image: image,
+                        dateString: total);
                     _historialDB.insertOrUpdate(metrics);
                     Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) == null &&
@@ -173,7 +176,8 @@ class _RegistroState extends State<Registro> {
                         grasa: null,
                         musculo: musculo,
                         date: currDate,
-                        image: image);
+                        image: image,
+                        dateString: total);
                     _historialDB.update(metrics);
                     Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) != null &&
@@ -183,7 +187,8 @@ class _RegistroState extends State<Registro> {
                         grasa: grasa,
                         musculo: null,
                         date: currDate,
-                        image: image);
+                        image: image,
+                        dateString: total);
                     _historialDB.update(metrics);
                     Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) == null &&
@@ -193,7 +198,8 @@ class _RegistroState extends State<Registro> {
                         grasa: null,
                         musculo: null,
                         date: currDate,
-                        image: image);
+                        image: image,
+                        dateString: total);
                     _historialDB.update(metrics);
 
                     Navigator.of(context).pop();
@@ -208,12 +214,15 @@ class _RegistroState extends State<Registro> {
     if (!repetido || data.isEmpty) {
       if (double.tryParse(grasa.toString()) != null &&
           double.tryParse(musculo.toString()) != null) {
+        print("ASI ES");
         var metrics = Metrics(
-            peso: peso,
-            grasa: grasa,
-            musculo: musculo,
-            date: currDate,
-            image: image);
+          peso: peso,
+          grasa: grasa,
+          musculo: musculo,
+          date: currDate,
+          image: image,
+          dateString: total,
+        );
         _historialDB.insertOrUpdate(metrics);
         Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) == null &&
@@ -223,7 +232,8 @@ class _RegistroState extends State<Registro> {
             grasa: null,
             musculo: musculo,
             date: currDate,
-            image: image);
+            image: image,
+            dateString: total);
         _historialDB.insertOrUpdate(metrics);
         Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) != null &&
@@ -233,7 +243,8 @@ class _RegistroState extends State<Registro> {
             grasa: grasa,
             musculo: null,
             date: currDate,
-            image: image);
+            image: image,
+            dateString: total);
         _historialDB.insertOrUpdate(metrics);
         Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) == null &&
@@ -243,7 +254,8 @@ class _RegistroState extends State<Registro> {
             grasa: null,
             musculo: null,
             date: currDate,
-            image: image);
+            image: image,
+            dateString: total);
         _historialDB.insertOrUpdate(metrics);
         Navigator.of(context).pop();
       }

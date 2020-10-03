@@ -26,6 +26,9 @@ class _HistorialState extends State<Historial> {
   @override
   void initState() {
     _historialDB.initializeDatabase();
+    _historialDB.selectAllQuotes().then((value) {
+      print(value[0].dateString);
+    });
     super.initState();
   }
 
@@ -124,8 +127,10 @@ class _HistorialState extends State<Historial> {
         future: _historialDB.getHistorialData(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.orange),
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Colors.orange),
+              ),
             );
           else if (snapshot.data.length == 0) {
             return Center(
