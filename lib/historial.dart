@@ -279,7 +279,6 @@ class _HistorialState extends State<Historial> {
                                             'Músculo: ${((double.parse(item.musculo) * 0.01 * (double.parse(item.peso)))).toStringAsFixed(2)} kgs.',
                                             style: TextStyle(
                                                 fontSize: 21,
-                                                //color: Colors.green,
                                                 fontWeight: FontWeight.bold),
                                           )
                                         : Text(

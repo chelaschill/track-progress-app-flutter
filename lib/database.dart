@@ -11,7 +11,6 @@ final String columnPeso = 'peso';
 final String columnGrasa = 'grasa';
 final String columnMusculo = 'musculo';
 final String columnDate = 'date';
-final String columnDateInteger = 'dateInteger';
 final String columnImagen = 'imagen';
 
 class HistorialDB {
@@ -48,8 +47,7 @@ class HistorialDB {
           $columnGrasa text,
           $columnMusculo text,
           $columnDate text,
-          $columnDateString text primary key,
-          $columnDateInteger integer)
+          $columnDateString text primary key)
         ''');
       },
     );
@@ -92,15 +90,6 @@ class HistorialDB {
     if (id == 0) insertData(metrics);
   }
 
-  Future<List<Map<String, dynamic>>> order() async {
-    var db = await this.database;
-    /*var result = await db
-        .rawQuery("SELECT * FROM $tableHistorial ORDER BY $columnDate ASC");*/
-    var result2 =
-        await db.query(tableHistorial, orderBy: '$columnDateInteger DESC');
-    return result2;
-  }
-
   Future<List<Metrics>> selectAllQuotes() async {
     Database db = await this.database;
     var result = await db
@@ -115,18 +104,5 @@ class HistorialDB {
         .rawQuery('SELECT * FROM $tableHistorial ORDER BY $columnDate ASC');
     var quotes = result.map((qAsMap) => Metrics.fromMap(qAsMap));
     return quotes.toList();
-  }
-
-  Future<List<Metrics>> sortByDate() async {
-    List<Map> results =
-        await _db.query(tableHistorial, orderBy: "$columnDateInteger DESC");
-
-    List<Metrics> metrics = List();
-    results.forEach((result) {
-      Metrics story = Metrics.fromMap(result);
-      metrics.add(story);
-    });
-
-    return metrics;
   }
 }

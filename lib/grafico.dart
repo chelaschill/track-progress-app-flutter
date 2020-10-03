@@ -456,7 +456,6 @@ class _GraficState extends State<Grafico> {
                   width: MediaQuery.of(context).size.width,
                   child: BezierChart(
                     bezierChartScale: BezierChartScale.WEEKLY,
-                    //xAxisCustomValues: xAxisValues(),
                     fromDate: fromDate,
                     toDate: toDate,
                     selectedDate: toDate,
@@ -482,7 +481,7 @@ class _GraficState extends State<Grafico> {
                         //ni idea que hacen
                         displayDataPointWhenNoValue:
                             false, //esconde puntos no registrados
-                        updatePositionOnTap: true,
+                        updatePositionOnTap: false,
                         verticalIndicatorStrokeWidth: 3.0,
                         verticalIndicatorColor: Colors.black26,
                         bubbleIndicatorColor: Colors.white60,

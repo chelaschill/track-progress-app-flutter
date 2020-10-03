@@ -37,17 +37,9 @@ class _RegistroState extends State<Registro> {
 
   @override
   void initState() {
-    /*_historialDB.initializeDatabase().then((value) {
-      loadHistorial();
-    });*/
     currDate = DateTime.now();
     super.initState();
   }
-
-  /*void loadHistorial() {
-    _historialData = _historialDB.getHistorialData();
-    if (mounted) setState(() {});
-  }*/
 
   @override
   void dispose() {
@@ -121,26 +113,14 @@ class _RegistroState extends State<Registro> {
   }
 
   void saveMetrics(BuildContext ctx) {
-    bool repetido = false;
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
-    _save = true;
-
     final dateParseada = intl.DateFormat('dd/MM/yyyy');
     final total = dateParseada.format(currDate);
-    /*for (int i = 0; i < data.length; i++) {
-      if (data[i].date.day == currDate.day &&
-          data[i].date.month == currDate.month &&
-          data[i].date.year == currDate.year) {
-        repetido = true;
-        reemplazar = i;
-        break;
-      }
-    }*/
 
-    if (repetido) {
+    /*if (false) {
       showDialog(
         context: context,
         builder: (context) {
@@ -209,55 +189,57 @@ class _RegistroState extends State<Registro> {
           );
         },
       );
-    }
-    if (!repetido) {
-      //|| data.isEmpty
-      if (double.tryParse(grasa.toString()) != null &&
-          double.tryParse(musculo.toString()) != null) {
-        var metrics = Metrics(
+    }*/
+
+    if (double.tryParse(grasa.toString()) != null &&
+        double.tryParse(musculo.toString()) != null) {
+      var metrics = Metrics(
+        peso: peso,
+        grasa: grasa,
+        musculo: musculo,
+        date: currDate,
+        image: image,
+        dateString: total,
+      );
+      _historialDB.insertOrUpdate(metrics).then((value) {
+        Navigator.of(context).pop();
+      });
+    } else if (double.tryParse(grasa.toString()) == null &&
+        double.tryParse(musculo.toString()) != null) {
+      var metrics = Metrics(
           peso: peso,
-          grasa: grasa,
+          grasa: null,
           musculo: musculo,
           date: currDate,
           image: image,
-          dateString: total,
-        );
-        _historialDB.insertOrUpdate(metrics);
+          dateString: total);
+      _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
-      } else if (double.tryParse(grasa.toString()) == null &&
-          double.tryParse(musculo.toString()) != null) {
-        var metrics = Metrics(
-            peso: peso,
-            grasa: null,
-            musculo: musculo,
-            date: currDate,
-            image: image,
-            dateString: total);
-        _historialDB.insertOrUpdate(metrics);
+      });
+    } else if (double.tryParse(grasa.toString()) != null &&
+        double.tryParse(musculo.toString()) == null) {
+      var metrics = Metrics(
+          peso: peso,
+          grasa: grasa,
+          musculo: null,
+          date: currDate,
+          image: image,
+          dateString: total);
+      _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
-      } else if (double.tryParse(grasa.toString()) != null &&
-          double.tryParse(musculo.toString()) == null) {
-        var metrics = Metrics(
-            peso: peso,
-            grasa: grasa,
-            musculo: null,
-            date: currDate,
-            image: image,
-            dateString: total);
-        _historialDB.insertOrUpdate(metrics);
+      });
+    } else if (double.tryParse(grasa.toString()) == null &&
+        double.tryParse(musculo.toString()) == null) {
+      var metrics = Metrics(
+          peso: peso,
+          grasa: null,
+          musculo: null,
+          date: currDate,
+          image: image,
+          dateString: total);
+      _historialDB.insertOrUpdate(metrics).then((value) {
         Navigator.of(context).pop();
-      } else if (double.tryParse(grasa.toString()) == null &&
-          double.tryParse(musculo.toString()) == null) {
-        var metrics = Metrics(
-            peso: peso,
-            grasa: null,
-            musculo: null,
-            date: currDate,
-            image: image,
-            dateString: total);
-        _historialDB.insertOrUpdate(metrics);
-        Navigator.of(context).pop();
-      }
+      });
     }
   }
 
