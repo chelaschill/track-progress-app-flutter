@@ -16,7 +16,6 @@ List<Metrics> data = [];
 
 class _HistorialState extends State<Historial> {
   HistorialDB _historialDB = HistorialDB();
-  Future<List<Metrics>> _historialData;
   bool save = false;
   String grasa;
   String musculo;
@@ -26,15 +25,8 @@ class _HistorialState extends State<Historial> {
 
   @override
   void initState() {
-    _historialDB.initializeDatabase().then((value) {
-      loadHistorial();
-    });
+    _historialDB.initializeDatabase();
     super.initState();
-  }
-
-  void loadHistorial() {
-    _historialData = _historialDB.getHistorialData();
-    if (mounted) setState(() {});
   }
 
   void add() {
@@ -82,13 +74,7 @@ class _HistorialState extends State<Historial> {
               MaterialPageRoute(
                 builder: (context) => Registro(),
               ),
-            ).then((argumentos) {
-              peso = argumentos[0];
-              grasa = argumentos[1];
-              musculo = argumentos[2];
-              date = argumentos[3];
-              image = argumentos[4];
-              save = argumentos[5];
+            ).then((_) {
               setState(() {});
             });
           },
@@ -96,20 +82,20 @@ class _HistorialState extends State<Historial> {
       ],
     );
 
-    if (save) {
+    /*if (save) {
       add();
       data.sort((a, b) => a.date.compareTo(b.date));
-    }
+    }*/
 
     return Scaffold(
       appBar: appBar,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (data.length > 1) {
+          if (0 > 1) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Grafico(data),
+                  builder: (context) => Grafico(),
                 ));
           } else {
             showDialog(
@@ -135,166 +121,181 @@ class _HistorialState extends State<Historial> {
         backgroundColor: Colors.indigo,
       ),
       body: FutureBuilder(
-        future: _historialData,
+        future: _historialDB.getHistorialData(),
         builder: (context, snapshot) {
-          return ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: data.length,
-            itemBuilder: (ctx, index) {
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8.0),
+          if (!snapshot.hasData)
+            return CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Colors.orange),
+            );
+          else if (snapshot.data.length == 0) {
+            return Center(
+              child: Text(
+                'No hay datos',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data.length,
+              itemBuilder: (ctx, index) {
+                var item = snapshot.data[index];
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8.0),
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Dismissible(
-                      key: ObjectKey(data[index]),
-                      onDismissed: (_) {
-                        setState(() {
-                          data.removeAt(index);
-                          save = false;
-                        });
-                      },
-                      confirmDismiss: (DismissDirection direction) async {
-                        return await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Confirmar"),
-                              content: const Text(
-                                  "¿Estás seguro de querer eliminar este registro?"),
-                              actions: [
-                                FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child: const Text("CANCELAR"),
-                                ),
-                                FlatButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: const Text("ELIMINAR"),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: AlignmentDirectional.centerEnd,
-                        color: Colors.red,
-                        child: Text(
-                          'ELIMINAR',
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                "${data[index].date.day}/${data[index].date.month}/${data[index].date.year}",
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFFDB556B),
-                                    decoration: TextDecoration.underline),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                  leading: Icon(
-                                    Icons.check,
-                                    color: Colors.green,
+                  child: Column(
+                    children: [
+                      Dismissible(
+                        key: ObjectKey(item),
+                        onDismissed: (_) {
+                          setState(() {
+                            snapshot.data.removeAt(index);
+                            _historialDB.delete(item);
+                            //data.removeAt(index);
+                            //save = false;
+                          });
+                        },
+                        confirmDismiss: (DismissDirection direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Confirmar"),
+                                content: const Text(
+                                    "¿Estás seguro de querer eliminar este registro?"),
+                                actions: [
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("CANCELAR"),
                                   ),
-                                  title: Text(
-                                    'Peso: ${double.parse(data[index].peso).toStringAsFixed(2)} kgs.',
-                                    style: TextStyle(
-                                      fontSize: 21,
+                                  FlatButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text("ELIMINAR"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: AlignmentDirectional.centerEnd,
+                          color: Colors.red,
+                          child: Text(
+                            'ELIMINAR',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "${item.date.day}/${item.date.month}/${item.date.year}",
+                                  style: TextStyle(
+                                      fontSize: 25,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      //color: Colors.green),
+                                      color: Color(0xFFDB556B),
+                                      decoration: TextDecoration.underline),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width - 10,
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),
+                                    title: Text(
+                                      'Peso: ${(double.parse(item.peso)).toStringAsFixed(2)} kgs.',
+                                      style: TextStyle(
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                        //color: Colors.green),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                  leading: data[index].grasa != null
-                                      ? Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : Icon(Icons.close, color: Colors.red),
-                                  title: data[index].grasa != null
-                                      ? Text(
-                                          'Grasa: ${((double.parse(data[index].grasa) * 0.01 * (double.parse(data[index].peso)))).toStringAsFixed(2)} kgs.',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              //color: Colors.green,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      : Text(
-                                          'Grasa: -',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              //color: Colors.red,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width - 10,
+                                  child: ListTile(
+                                    leading: item.grasa != null
+                                        ? Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          )
+                                        : Icon(Icons.close, color: Colors.red),
+                                    title: item.grasa != null
+                                        ? Text(
+                                            'Grasa: ${((double.parse(item.grasa) * 0.01 * (double.parse(item.peso)))).toStringAsFixed(2)} kgs.',
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                //color: Colors.green,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : Text(
+                                            'Grasa: -',
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                //color: Colors.red,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                  leading: data[index].musculo != null
-                                      ? Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : Icon(Icons.close, color: Colors.red),
-                                  title: data[index].musculo != null
-                                      ? Text(
-                                          'Músculo: ${((double.parse(data[index].musculo) * 0.01 * (double.parse(data[index].peso)))).toStringAsFixed(2)} kgs.',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              //color: Colors.green,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      : Text(
-                                          'Músculo: -',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              //color: Colors.redAccent,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width - 10,
+                                  child: ListTile(
+                                    leading: item.musculo != null
+                                        ? Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          )
+                                        : Icon(Icons.close, color: Colors.red),
+                                    title: item.musculo != null
+                                        ? Text(
+                                            'Músculo: ${((double.parse(item.musculo) * 0.01 * (double.parse(item.peso)))).toStringAsFixed(2)} kgs.',
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                //color: Colors.green,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : Text(
+                                            'Músculo: -',
+                                            style: TextStyle(
+                                                fontSize: 21,
+                                                //color: Colors.redAccent,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    data[index].image == null
-                        ? Expanded(
-                            child: Center(
-                              child: Container(
-                                child: Padding(
-                                    padding: EdgeInsets.all(100),
-                                    child: Image.network(
-                                      "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
-                                      fit: BoxFit.fill,
-                                    )),
-                              ),
+                              ],
                             ),
-                          )
-                        : Expanded(
-                            child: Container(
+                          ],
+                        ),
+                      ),
+                      item.image == null
+                          ? Expanded(
+                              child: Center(
+                                child: Container(
+                                  child: Padding(
+                                      padding: EdgeInsets.all(100),
+                                      child: Image.network(
+                                        "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
+                                        fit: BoxFit.fill,
+                                      )),
+                                ),
+                              ),
+                            )
+                          : Expanded(
+                              child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: ListView(
                                   children: [
@@ -303,19 +304,15 @@ class _HistorialState extends State<Historial> {
                                       fit: BoxFit.fill,
                                     ),
                                   ],
-                                )),
-                          ),
-                  ],
-                ),
-              );
-            },
-          );
-          return Center(
-            child: Text(
-              'NO HAY DATOS',
-              style: TextStyle(fontSize: 30),
-            ),
-          );
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );

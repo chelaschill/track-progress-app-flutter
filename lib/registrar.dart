@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:path/path.dart' as path;
+import 'package:intl/intl.dart' as intl;
 
 import 'package:progreso_corporal_app/historial.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
@@ -137,6 +138,7 @@ class _RegistroState extends State<Registro> {
         break;
       }
     }
+
     if (repetido) {
       showDialog(
         context: context,
@@ -153,26 +155,48 @@ class _RegistroState extends State<Registro> {
                 child: const Text("REEMPLAZAR"),
                 onPressed: () {
                   Navigator.of(context).pop();
+
                   if (double.tryParse(grasa.toString()) != null &&
                       double.tryParse(musculo.toString()) != null) {
-                    Navigator.of(context).pop(
-                      [peso, grasa, musculo, currDate, image, _save],
-                    );
+                    var metrics = Metrics(
+                        peso: peso,
+                        grasa: grasa,
+                        musculo: musculo,
+                        date: currDate,
+                        image: image);
+                    _historialDB.insertOrUpdate(metrics);
+                    Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) == null &&
                       double.tryParse(musculo.toString()) != null) {
-                    Navigator.of(context).pop(
-                      [peso, null, musculo, currDate, image, _save],
-                    );
+                    var metrics = Metrics(
+                        peso: peso,
+                        grasa: null,
+                        musculo: musculo,
+                        date: currDate,
+                        image: image);
+                    _historialDB.update(metrics);
+                    Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) != null &&
                       double.tryParse(musculo.toString()) == null) {
-                    Navigator.of(context).pop(
-                      [peso, grasa, null, currDate, image, _save],
-                    );
+                    var metrics = Metrics(
+                        peso: peso,
+                        grasa: grasa,
+                        musculo: null,
+                        date: currDate,
+                        image: image);
+                    _historialDB.update(metrics);
+                    Navigator.of(context).pop();
                   } else if (double.tryParse(grasa.toString()) == null &&
                       double.tryParse(musculo.toString()) == null) {
-                    Navigator.of(context).pop(
-                      [peso, null, null, currDate, image, _save],
-                    );
+                    var metrics = Metrics(
+                        peso: peso,
+                        grasa: null,
+                        musculo: null,
+                        date: currDate,
+                        image: image);
+                    _historialDB.update(metrics);
+
+                    Navigator.of(context).pop();
                   }
                 },
               ),
@@ -184,24 +208,44 @@ class _RegistroState extends State<Registro> {
     if (!repetido || data.isEmpty) {
       if (double.tryParse(grasa.toString()) != null &&
           double.tryParse(musculo.toString()) != null) {
-        Navigator.of(context).pop(
-          [peso, grasa, musculo, currDate, image, _save],
-        );
+        var metrics = Metrics(
+            peso: peso,
+            grasa: grasa,
+            musculo: musculo,
+            date: currDate,
+            image: image);
+        _historialDB.insertOrUpdate(metrics);
+        Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) == null &&
           double.tryParse(musculo.toString()) != null) {
-        Navigator.of(context).pop(
-          [peso, null, musculo, currDate, image, _save],
-        );
+        var metrics = Metrics(
+            peso: peso,
+            grasa: null,
+            musculo: musculo,
+            date: currDate,
+            image: image);
+        _historialDB.insertOrUpdate(metrics);
+        Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) != null &&
           double.tryParse(musculo.toString()) == null) {
-        Navigator.of(context).pop(
-          [peso, grasa, null, currDate, image, _save],
-        );
+        var metrics = Metrics(
+            peso: peso,
+            grasa: grasa,
+            musculo: null,
+            date: currDate,
+            image: image);
+        _historialDB.insertOrUpdate(metrics);
+        Navigator.of(context).pop();
       } else if (double.tryParse(grasa.toString()) == null &&
           double.tryParse(musculo.toString()) == null) {
-        Navigator.of(context).pop(
-          [peso, null, null, currDate, image, _save],
-        );
+        var metrics = Metrics(
+            peso: peso,
+            grasa: null,
+            musculo: null,
+            date: currDate,
+            image: image);
+        _historialDB.insertOrUpdate(metrics);
+        Navigator.of(context).pop();
       }
     }
   }
@@ -438,14 +482,7 @@ class _RegistroState extends State<Registro> {
                     height: 50,
                     child: RaisedButton(
                       elevation: 10,
-                      onPressed: () async {
-                        var metrics = Metrics(
-                            peso: peso,
-                            grasa: grasa,
-                            musculo: musculo,
-                            date: currDate,
-                            image: image);
-                        _historialDB.insertData(metrics);
+                      onPressed: () {
                         saveMetrics(context);
                       },
                       child: Text(

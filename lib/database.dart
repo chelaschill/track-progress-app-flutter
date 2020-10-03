@@ -17,6 +17,7 @@ class HistorialDB {
 
   static Database _database;
   static HistorialDB _historialDB;
+  Database _db;
 
   HistorialDB._createInstance();
   factory HistorialDB() {
@@ -53,34 +54,67 @@ class HistorialDB {
     return database;
   }
 
-  void insertData(Metrics metrics) async {
+  Future<int> insertData(Metrics metrics) async {
     var db = await database;
-    var result = await db.insert(tableHistorial, metrics.toMap());
-    print('resultado es $result');
+    return await db.insert(tableHistorial, metrics.toMap());
   }
 
   Future<List<Metrics>> getHistorialData() async {
-    List<Metrics> _alarms = [];
+    List<Metrics> _historial = [];
 
     var db = await this.database;
     var result = await db.query(tableHistorial);
     result.forEach((element) {
       var alarmInfo = Metrics.fromMap(element);
-      _alarms.add(alarmInfo);
+      _historial.add(alarmInfo);
     });
 
-    return _alarms;
+    return _historial;
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(Metrics metrics) async {
     var db = await this.database;
-    return await db
-        .delete(tableHistorial, where: '$columnDate = ?', whereArgs: [id]);
+    return await db.delete(tableHistorial,
+        where: '$columnDate = ?', whereArgs: [metrics.date.toIso8601String()]);
   }
 
   Future<int> update(Metrics metrics) async {
     var db = await this.database;
     return await db.update(tableHistorial, metrics.toMap(),
-        where: '$columnDate = ?', whereArgs: [metrics.date]);
+        where: '$columnDate = ?', whereArgs: [metrics.date.toIso8601String()]);
+  }
+
+  Future insertOrUpdate(Metrics metrics) async {
+    var id = await update(metrics);
+    if (id == 0) insertData(metrics);
+  }
+
+  Future<List<Map<String, dynamic>>> order() async {
+    var db = await this.database;
+    /*var result = await db
+        .rawQuery("SELECT * FROM $tableHistorial ORDER BY $columnDate ASC");*/
+    var result2 = await db.query(tableHistorial, orderBy: '$columnDate ASC');
+    return result2;
+  }
+
+  Future<List<Metrics>> selectAllQuotes() async {
+    Database db = await this.database;
+    var result = await db
+        .rawQuery('SELECT * FROM $tableHistorial ORDER BY $columnDate ASC');
+    var quotes = result.map((qAsMap) => Metrics.fromMap(qAsMap));
+    return quotes.toList();
+  }
+
+  Future<List<Metrics>> sortByDate() async {
+    List<Map> results =
+        await _db.query(tableHistorial, orderBy: "$columnDate DESC");
+
+    List<Metrics> metrics = List();
+    results.forEach((result) {
+      Metrics story = Metrics.fromMap(result);
+      metrics.add(story);
+    });
+
+    return metrics;
   }
 }
