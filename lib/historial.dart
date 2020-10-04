@@ -30,35 +30,6 @@ class _HistorialState extends State<Historial> {
     super.initState();
   }
 
-  void add() {
-    if (data.isEmpty) {
-      data.add(
-        Metrics(
-            peso: peso,
-            grasa: grasa,
-            musculo: musculo,
-            date: date,
-            image: image),
-      );
-    } else {
-      for (int i = 0; i < data.length; i++) {
-        if (date.day == data[i].date.day &&
-            date.month == data[i].date.month &&
-            date.year == data[i].date.year) {
-          data.removeAt(i);
-        }
-      }
-      data.add(
-        Metrics(
-            peso: peso,
-            grasa: grasa,
-            musculo: musculo,
-            date: date,
-            image: image),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
@@ -293,11 +264,12 @@ class _HistorialState extends State<Historial> {
                               child: Center(
                                 child: Container(
                                   child: Padding(
-                                      padding: EdgeInsets.all(100),
-                                      child: Image.network(
-                                        "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
-                                        fit: BoxFit.fill,
-                                      )),
+                                    padding: EdgeInsets.all(100),
+                                    child: Image.network(
+                                      "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
                               ),
                             )
