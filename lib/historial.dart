@@ -33,7 +33,7 @@ class _HistorialState extends State<Historial> {
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-      title: Text('Historial'),
+      title: const Text('Historial'),
       actions: [
         IconButton(
           icon: Icon(

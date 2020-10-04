@@ -439,125 +439,174 @@ class _GraficState extends State<Grafico> {
     final fromDate = widget.data[0].date; //la menor fecha
     final toDate = widget.data[widget.data.length - 1].date; // la maxima fecha
     final appBar = AppBar(
-      title: Text('Gráfico'),
+      title: const Text('Gráfico'),
     );
 
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: appBar,
-      body: ListView(
-        children: [
-          Column(
-            children: [
-              Container(
-                color: Colors.grey,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: BezierChart(
-                  bezierChartScale: BezierChartScale.WEEKLY,
-                  fromDate: fromDate,
-                  toDate: toDate,
-                  selectedDate: toDate,
-                  footerDateTimeBuilder:
-                      (DateTime value, BezierChartScale scaleType) {
-                    final newFormat = intl.DateFormat('dd/MM');
-                    return newFormat.format(value);
-                  },
-                  series: showLines("weekly"),
-                  config: BezierChartConfig(
-                      showDataPoints: true,
-                      displayYAxis: true,
-                      stepsYAxis: 15,
-                      bubbleIndicatorLabelStyle: TextStyle(color: Colors.black),
-                      displayLinesXAxis: true,
-                      pinchZoom: false,
-                      displayDataPointWhenNoValue: false,
-                      updatePositionOnTap: false,
-                      verticalIndicatorStrokeWidth: 3.0,
-                      verticalIndicatorColor: Colors.black26,
-                      bubbleIndicatorColor: Colors.white60,
-                      bubbleIndicatorTitleStyle: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      showVerticalIndicator: false,
-                      verticalIndicatorFixedPosition: false,
-                      backgroundColor: Colors.transparent,
-                      footerHeight: 35.0,
-                      xAxisTextStyle: TextStyle(color: Colors.black),
-                      yAxisTextStyle:
-                          TextStyle(color: Colors.black, fontSize: 10),
-                      startYAxisFromNonZeroValue: false),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Column(
+                children: [
+                  Text(
+                    'SEMANAL',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                  Container(
+                    color: Colors.blueGrey,
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: BezierChart(
+                      bezierChartScale: BezierChartScale.WEEKLY,
+                      fromDate: fromDate,
+                      toDate: toDate,
+                      selectedDate: toDate,
+                      footerDateTimeBuilder:
+                          (DateTime value, BezierChartScale scaleType) {
+                        final newFormat = intl.DateFormat('dd/MM');
+                        return newFormat.format(value);
+                      },
+                      series: showLines("weekly"),
+                      config: BezierChartConfig(
+                          showDataPoints: true,
+                          displayYAxis: true,
+                          stepsYAxis: 15,
+                          bubbleIndicatorLabelStyle:
+                              TextStyle(color: Colors.black),
+                          displayLinesXAxis: true,
+                          pinchZoom: false,
+                          displayDataPointWhenNoValue: false,
+                          updatePositionOnTap: false,
+                          verticalIndicatorStrokeWidth: 3.0,
+                          verticalIndicatorColor: Colors.black26,
+                          bubbleIndicatorColor: Colors.white60,
+                          bubbleIndicatorTitleStyle: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                          showVerticalIndicator: false,
+                          verticalIndicatorFixedPosition: false,
+                          backgroundColor: Colors.transparent,
+                          footerHeight: 35.0,
+                          xAxisTextStyle: TextStyle(color: Colors.black),
+                          yAxisTextStyle:
+                              TextStyle(color: Colors.black, fontSize: 10),
+                          startYAxisFromNonZeroValue: false),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'MENSUAL',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                  Container(
+                    color: Colors.blueGrey,
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: BezierChart(
+                      bezierChartScale: BezierChartScale.MONTHLY,
+                      fromDate: fromDate,
+                      toDate: toDate,
+                      selectedDate: toDate,
+                      series: showLines("monthly"),
+                      config: BezierChartConfig(
+                          showDataPoints: true,
+                          displayYAxis: true,
+                          stepsYAxis: 15,
+                          bubbleIndicatorLabelStyle:
+                              TextStyle(color: Colors.black),
+                          displayLinesXAxis: true,
+                          pinchZoom: false,
+                          displayDataPointWhenNoValue: false,
+                          updatePositionOnTap: false,
+                          verticalIndicatorStrokeWidth: 3.0,
+                          verticalIndicatorColor: Colors.black26,
+                          bubbleIndicatorColor: Colors.white60,
+                          bubbleIndicatorTitleStyle: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                          showVerticalIndicator: false,
+                          verticalIndicatorFixedPosition: false,
+                          backgroundColor: Colors.transparent,
+                          footerHeight: 35.0,
+                          xAxisTextStyle: TextStyle(color: Colors.black),
+                          yAxisTextStyle:
+                              TextStyle(color: Colors.black, fontSize: 10),
+                          startYAxisFromNonZeroValue: false),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'ANUAL',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                      ),
+                    ),
+                    Container(
+                      color: Colors.blueGrey,
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: BezierChart(
+                        bezierChartScale: BezierChartScale.YEARLY,
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        selectedDate: toDate,
+                        series: showLines("yearly"),
+                        config: BezierChartConfig(
+                            showDataPoints: true,
+                            displayYAxis: true,
+                            stepsYAxis: 15,
+                            bubbleIndicatorLabelStyle:
+                                TextStyle(color: Colors.black),
+                            displayLinesXAxis: true,
+                            pinchZoom: false,
+                            displayDataPointWhenNoValue: false,
+                            updatePositionOnTap: false,
+                            verticalIndicatorStrokeWidth: 3.0,
+                            verticalIndicatorColor: Colors.black26,
+                            bubbleIndicatorColor: Colors.white60,
+                            bubbleIndicatorTitleStyle: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            showVerticalIndicator: false,
+                            verticalIndicatorFixedPosition: false,
+                            backgroundColor: Colors.transparent,
+                            footerHeight: 35.0,
+                            xAxisTextStyle: TextStyle(color: Colors.black),
+                            yAxisTextStyle:
+                                TextStyle(color: Colors.black, fontSize: 10),
+                            startYAxisFromNonZeroValue: false),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Container(
-                color: Colors.grey,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: BezierChart(
-                  bezierChartScale: BezierChartScale.MONTHLY,
-                  fromDate: fromDate,
-                  toDate: toDate,
-                  selectedDate: toDate,
-                  series: showLines("monthly"),
-                  config: BezierChartConfig(
-                      showDataPoints: true,
-                      displayYAxis: true,
-                      stepsYAxis: 15,
-                      bubbleIndicatorLabelStyle: TextStyle(color: Colors.black),
-                      displayLinesXAxis: true,
-                      pinchZoom: false,
-                      displayDataPointWhenNoValue: false,
-                      updatePositionOnTap: false,
-                      verticalIndicatorStrokeWidth: 3.0,
-                      verticalIndicatorColor: Colors.black26,
-                      bubbleIndicatorColor: Colors.white60,
-                      bubbleIndicatorTitleStyle: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      showVerticalIndicator: false,
-                      verticalIndicatorFixedPosition: false,
-                      backgroundColor: Colors.transparent,
-                      footerHeight: 35.0,
-                      xAxisTextStyle: TextStyle(color: Colors.black),
-                      yAxisTextStyle:
-                          TextStyle(color: Colors.black, fontSize: 10),
-                      startYAxisFromNonZeroValue: false),
-                ),
-              ),
-              Container(
-                color: Colors.grey,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: BezierChart(
-                  bezierChartScale: BezierChartScale.YEARLY,
-                  fromDate: fromDate,
-                  toDate: toDate,
-                  selectedDate: toDate,
-                  series: showLines("yearly"),
-                  config: BezierChartConfig(
-                      showDataPoints: true,
-                      displayYAxis: true,
-                      stepsYAxis: 15,
-                      bubbleIndicatorLabelStyle: TextStyle(color: Colors.black),
-                      displayLinesXAxis: true,
-                      pinchZoom: false,
-                      displayDataPointWhenNoValue: false,
-                      updatePositionOnTap: false,
-                      verticalIndicatorStrokeWidth: 3.0,
-                      verticalIndicatorColor: Colors.black26,
-                      bubbleIndicatorColor: Colors.white60,
-                      bubbleIndicatorTitleStyle: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                      showVerticalIndicator: false,
-                      verticalIndicatorFixedPosition: false,
-                      backgroundColor: Colors.transparent,
-                      footerHeight: 35.0,
-                      xAxisTextStyle: TextStyle(color: Colors.black),
-                      yAxisTextStyle:
-                          TextStyle(color: Colors.black, fontSize: 10),
-                      startYAxisFromNonZeroValue: false),
-                ),
-              ),
-            ],
-          )
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

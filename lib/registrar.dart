@@ -208,7 +208,7 @@ class _RegistroState extends State<Registro> {
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-      title: Text(
+      title: const Text(
         'Registra tu progreso',
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
