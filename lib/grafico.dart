@@ -436,8 +436,8 @@ class _GraficState extends State<Grafico> {
 
   @override
   Widget build(BuildContext context) {
-    final fromDate = widget.data[0].date; //la menor fecha
-    final toDate = widget.data[widget.data.length - 1].date; // la maxima fecha
+    final fromDate = widget.data[0].date;
+    final toDate = widget.data[widget.data.length - 1].date;
     final appBar = AppBar(
       backgroundColor: Colors.blueGrey,
       title: const Text('Gráfico'),
