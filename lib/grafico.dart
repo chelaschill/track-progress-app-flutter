@@ -439,6 +439,7 @@ class _GraficState extends State<Grafico> {
     final fromDate = widget.data[0].date; //la menor fecha
     final toDate = widget.data[widget.data.length - 1].date; // la maxima fecha
     final appBar = AppBar(
+      backgroundColor: Colors.blueGrey,
       title: const Text('Gráfico'),
     );
 
