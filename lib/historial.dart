@@ -265,10 +265,7 @@ class _HistorialState extends State<Historial> {
                                 child: Container(
                                   child: Padding(
                                     padding: EdgeInsets.all(100),
-                                    child: Image.network(
-                                      "https://www.thegreenhome.com.mx/images/large/no_image.jpg",
-                                      fit: BoxFit.fill,
-                                    ),
+                                    child: Image.asset('images/no_image.jpg'),
                                   ),
                                 ),
                               ),

@@ -481,7 +481,7 @@ class _GraficState extends State<Grafico> {
                           stepsYAxis: 15,
                           bubbleIndicatorLabelStyle:
                               TextStyle(color: Colors.black),
-                          displayLinesXAxis: true,
+                          displayLinesXAxis: false,
                           pinchZoom: false,
                           displayDataPointWhenNoValue: false,
                           updatePositionOnTap: false,
@@ -531,7 +531,7 @@ class _GraficState extends State<Grafico> {
                           stepsYAxis: 15,
                           bubbleIndicatorLabelStyle:
                               TextStyle(color: Colors.black),
-                          displayLinesXAxis: true,
+                          displayLinesXAxis: false,
                           pinchZoom: false,
                           displayDataPointWhenNoValue: false,
                           updatePositionOnTap: false,
@@ -582,7 +582,7 @@ class _GraficState extends State<Grafico> {
                             stepsYAxis: 15,
                             bubbleIndicatorLabelStyle:
                                 TextStyle(color: Colors.black),
-                            displayLinesXAxis: true,
+                            displayLinesXAxis: false,
                             pinchZoom: false,
                             displayDataPointWhenNoValue: false,
                             updatePositionOnTap: false,
