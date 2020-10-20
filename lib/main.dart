@@ -19,6 +19,7 @@ class _MazetaAppState extends State<MazetaApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "+ZTracker",
       theme: ThemeData(
         appBarTheme: AppBarTheme(

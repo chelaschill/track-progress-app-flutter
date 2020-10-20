@@ -1,6 +1,8 @@
+import 'package:progreso_corporal_app/historial.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:progreso_corporal_app/widgets/metrics.dart';
+import 'package:path/path.dart' as p;
 
 final String tableHistorial = 'historial';
 final String columnDateString = 'dateString';
@@ -31,7 +33,8 @@ class HistorialDB {
 
   Future<Database> initializeDatabase() async {
     var dir = await getDatabasesPath();
-    var path = dir + "historial.db";
+    String path = p.join(dir, "historial.db");
+    //var path = dir + "historial.db";
 
     var database = await openDatabase(
       path,

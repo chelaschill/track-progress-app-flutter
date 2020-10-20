@@ -126,6 +126,7 @@ class _RegistroState extends State<Registro> {
 
     if (double.tryParse(grasa.toString()) != null &&
         double.tryParse(musculo.toString()) != null) {
+
       var metrics = image == null
           ? Metrics(
               peso: peso,
@@ -274,7 +275,7 @@ class _RegistroState extends State<Registro> {
                                         color: Colors.black, width: 0.8)),
                                 border: OutlineInputBorder(),
                                 labelText: 'Peso'),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
                             controller: pcontroller,
                             onChanged: (value) {
                               peso = value;
@@ -312,7 +313,7 @@ class _RegistroState extends State<Registro> {
                               border: OutlineInputBorder(),
                               labelText: '%Grasa',
                             ),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
                             controller: gcontroller,
                             onChanged: (value) {
                               grasa = value;
@@ -348,7 +349,7 @@ class _RegistroState extends State<Registro> {
                               border: OutlineInputBorder(),
                               labelText: '%Músculo',
                             ),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
                             controller: mcontroller,
                             onChanged: (value) {
                               musculo = value;
@@ -439,7 +440,7 @@ class _RegistroState extends State<Registro> {
                       elevation: 10,
                       onPressed: () {
                         saveMetrics(context);
-                      },
+                        },
                       child: Text(
                         "Registrar",
                         style: TextStyle(fontSize: 20),
