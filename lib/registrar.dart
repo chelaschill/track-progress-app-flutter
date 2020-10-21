@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
@@ -22,7 +23,6 @@ class _RegistroState extends State<Registro> {
   final _toGrasaFocusNode = FocusNode();
   final _toMusculoFocusNode = FocusNode();
 
-  bool _save;
   DateTime currDate;
   File image;
   String peso;
@@ -208,6 +208,7 @@ class _RegistroState extends State<Registro> {
 
   @override
   Widget build(BuildContext context) {
+    var _blankFocusNode = FocusNode();
     final appBar = AppBar(
       title: const Text(
         'Registra tu progreso',
@@ -216,245 +217,251 @@ class _RegistroState extends State<Registro> {
       ),
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: Builder(builder: (context) {
-        return ListView(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          color: Colors.red,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            "${currDate.day}/${currDate.month}/${currDate.year}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                                color: Colors.black),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){
+        FocusScope.of(context).requestFocus(_blankFocusNode);
+      },
+      child: Scaffold(
+        appBar: appBar,
+        body: Builder(builder: (context) {
+          return ListView(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            color: Colors.red,
                           ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.black,
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(
+                              "${currDate.day}/${currDate.month}/${currDate.year}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.black),
+                            ),
+                          ),
+                          Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        _pickDate(context);
+                      },
                     ),
-                    onTap: () {
-                      _pickDate(context);
-                    },
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Form(
-                  key: _form,
-                  child: Row(children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          //height: 40,
-                          width: 110,
-                          child: TextFormField(
-                            decoration: InputDecoration(
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Form(
+                    key: _form,
+                    child: Row(children: [
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Column(
+                        children: [
+                          Container(
+                            //height: 40,
+                            width: 110,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.black, width: 0.8)),
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Peso'),
+                              keyboardType: TextInputType.numberWithOptions(decimal: true,),
+                              controller: pcontroller,
+                              onChanged: (value) {
+                                peso = value;
+                              },
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_toGrasaFocusNode);
+                              },
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Obligatorio';
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'Valor inválido';
+                                }
+                                if (double.parse(value) <= 0) {
+                                  return 'Valor inválido.';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            //height: 40,
+                            width: 110,
+                            child: TextFormField(
+                              decoration: InputDecoration(
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: const BorderSide(
                                         color: Colors.black, width: 0.8)),
                                 border: OutlineInputBorder(),
-                                labelText: 'Peso'),
-                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
-                            controller: pcontroller,
-                            onChanged: (value) {
-                              peso = value;
-                            },
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) {
-                              FocusScope.of(context)
-                                  .requestFocus(_toGrasaFocusNode);
-                            },
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Obligatorio';
-                              }
-                              if (double.tryParse(value) == null) {
-                                return 'Valor inválido';
-                              }
-                              if (double.parse(value) <= 0) {
-                                return 'Valor inválido.';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          //height: 40,
-                          width: 110,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.black, width: 0.8)),
-                              border: OutlineInputBorder(),
-                              labelText: '%Grasa',
-                            ),
-                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
-                            controller: gcontroller,
-                            onChanged: (value) {
-                              grasa = value;
-                            },
-                            textInputAction: TextInputAction.next,
-                            focusNode: _toGrasaFocusNode,
-                            onFieldSubmitted: (_) {
-                              FocusScope.of(context)
-                                  .requestFocus(_toMusculoFocusNode);
-                            },
-                            validator: (value) {
-                              if (value.isNotEmpty) {
-                                if (double.tryParse(value) == null ||
-                                    double.tryParse(value) <= 0) {
-                                  return 'Valor inválido';
+                                labelText: '%Grasa',
+                              ),
+                              keyboardType: TextInputType.numberWithOptions(decimal: true,),
+                              controller: gcontroller,
+                              onChanged: (value) {
+                                grasa = value;
+                              },
+                              textInputAction: TextInputAction.next,
+                              focusNode: _toGrasaFocusNode,
+                              onFieldSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_toMusculoFocusNode);
+                              },
+                              validator: (value) {
+                                if (value.isNotEmpty) {
+                                  if (double.tryParse(value) == null ||
+                                      double.tryParse(value) <= 0) {
+                                    return 'Valor inválido';
+                                  }
                                 }
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          //height: 40,
-                          width: 110,
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.black, width: 0.8)),
-                              border: OutlineInputBorder(),
-                              labelText: '%Músculo',
+                                return null;
+                              },
                             ),
-                            keyboardType: TextInputType.numberWithOptions(decimal: true,),
-                            controller: mcontroller,
-                            onChanged: (value) {
-                              musculo = value;
-                            },
-                            textInputAction: TextInputAction.done,
-                            focusNode: _toMusculoFocusNode,
-                            validator: (value) {
-                              if (value.isNotEmpty) {
-                                if (double.tryParse(value) == null ||
-                                    double.tryParse(value) <= 0) {
-                                  return 'Valor inválido';
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            //height: 40,
+                            width: 110,
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.black, width: 0.8)),
+                                border: OutlineInputBorder(),
+                                labelText: '%Músculo',
+                              ),
+                              keyboardType: TextInputType.numberWithOptions(decimal: true,),
+                              controller: mcontroller,
+                              onChanged: (value) {
+                                musculo = value;
+                              },
+                              textInputAction: TextInputAction.done,
+                              focusNode: _toMusculoFocusNode,
+                              validator: (value) {
+                                if (value.isNotEmpty) {
+                                  if (double.tryParse(value) == null ||
+                                      double.tryParse(value) <= 0) {
+                                    return 'Valor inválido';
+                                  }
                                 }
-                              }
-                              return null;
-                            },
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: image == null
+                            ? Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Container(
+                                  decoration: BoxDecoration(border: Border.all()),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.6,
+                                  child: Center(
+                                      child: IconButton(
+                                          icon: Icon(Icons.camera_alt),
+                                          onPressed: () {
+                                            createAlertDialog(context);
+                                          })),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: GestureDetector(
+                                  child: Container(
+                                    child: Image.file(
+                                      image,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    createAlertDialog(context);
+                                  },
+                                  onDoubleTap: () {
+                                    setState(() {
+                                      image = null;
+                                    });
+                                  },
+                                ),
+                              ),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(
+                    width: 1,
+                  )
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (image != null)
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Center(
+                          child: Text(
+                            'Doble toque para borrar la imagen',
+                            style:
+                                TextStyle(color: Colors.redAccent, fontSize: 20),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: image == null
-                          ? Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Container(
-                                decoration: BoxDecoration(border: Border.all()),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.6,
-                                child: Center(
-                                    child: IconButton(
-                                        icon: Icon(Icons.camera_alt),
-                                        onPressed: () {
-                                          createAlertDialog(context);
-                                        })),
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: GestureDetector(
-                                child: Container(
-                                  child: Image.file(
-                                    image,
-                                  ),
-                                ),
-                                onTap: () {
-                                  createAlertDialog(context);
-                                },
-                                onDoubleTap: () {
-                                  setState(() {
-                                    image = null;
-                                  });
-                                },
-                              ),
-                            ),
-                    ),
-                  ]),
-                ),
-                SizedBox(
-                  width: 1,
-                )
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (image != null)
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8, top: 20),
+                    child: Container(
+                      height: 50,
+                      child: RaisedButton(
+                        elevation: 10,
+                        onPressed: () {
+                          saveMetrics(context);
+                          },
                         child: Text(
-                          'Doble toque para borrar la imagen',
-                          style:
-                              TextStyle(color: Colors.redAccent, fontSize: 20),
+                          "Registrar",
+                          style: TextStyle(fontSize: 20),
                         ),
+                        color: Colors.teal,
+                        textColor: Colors.white,
                       ),
-                    ],
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8, top: 20),
-                  child: Container(
-                    height: 50,
-                    child: RaisedButton(
-                      elevation: 10,
-                      onPressed: () {
-                        saveMetrics(context);
-                        },
-                      child: Text(
-                        "Registrar",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      color: Colors.teal,
-                      textColor: Colors.white,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        );
-      }),
+                ],
+              ),
+            ],
+          );
+        }),
+      ),
     );
   }
 }
