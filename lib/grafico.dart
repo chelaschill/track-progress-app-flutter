@@ -85,8 +85,6 @@ class _GraficState extends State<Grafico> {
   List<DataPoint<DateTime>> dataMensual(String medida) {
     List<DataPoint<DateTime>> mensual = [];
 
-    int anioInicial = widget.data[0].date.year;
-    int anioFinal = widget.data[widget.data.length - 1].date.year;
     int mesInicial = widget.data[0].date.month;
     int mesFinal = widget.data[widget.data.length - 1].date.month;
 
@@ -97,7 +95,8 @@ class _GraficState extends State<Grafico> {
         double promedio = 0;
         int index = 0;
         for (int j = 0; j < widget.data.length; j++) {
-          if (widget.data[j].date.month == i) {
+
+            if (widget.data[j].date.month == i) {
             suma += double.parse(widget.data[j].peso);
             contador++;
           }
