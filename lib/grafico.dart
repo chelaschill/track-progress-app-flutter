@@ -53,10 +53,16 @@ class _GraficState extends State<Grafico> {
       for (int i = 0; i < widget.data.length; i++) {
         if (widget.data[i].peso != null) {
           suma += double.parse(widget.data[i].peso);
+          contador++;
         }
       }
-      promedio = suma / widget.data.length;
-      return double.parse(double.parse(promedio.toString()).toStringAsFixed(2));
+      if (contador == 0) {
+        return 0;
+      }
+      promedio = suma / contador;
+      return double.parse(
+        double.parse(promedio.toString()).toStringAsFixed(2),
+      );
     }
   }
 
@@ -64,10 +70,13 @@ class _GraficState extends State<Grafico> {
     List<DataPoint<DateTime>> points = [];
     for (int i = 0; i < widget.data.length; i++) {
       if (!points.contains(widget.data[i].date)) {
-        points.add(DataPoint<DateTime>(
-            value: double.parse(
-                (double.parse(widget.data[i].peso).toStringAsFixed(2))),
-            xAxis: widget.data[i].date));
+        points.add(
+          DataPoint<DateTime>(
+              value: double.parse(
+                (double.parse(widget.data[i].peso).toStringAsFixed(2)),
+              ),
+              xAxis: widget.data[i].date),
+        );
       }
     }
     return points;
@@ -76,6 +85,8 @@ class _GraficState extends State<Grafico> {
   List<DataPoint<DateTime>> dataMensual(String medida) {
     List<DataPoint<DateTime>> mensual = [];
 
+    int anioInicial = widget.data[0].date.year;
+    int anioFinal = widget.data[widget.data.length - 1].date.year;
     int mesInicial = widget.data[0].date.month;
     int mesFinal = widget.data[widget.data.length - 1].date.month;
 
@@ -89,22 +100,24 @@ class _GraficState extends State<Grafico> {
           if (widget.data[j].date.month == i) {
             suma += double.parse(widget.data[j].peso);
             contador++;
-          } else if (widget.data[j].date.month > i) {
-            break;
           }
         }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.month == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.month == i) {
+              index = k;
+              break;
+            }
           }
+          mensual.add(
+            DataPoint<DateTime>(
+                value: double.parse(
+                  (promedio).toStringAsFixed(2),
+                ),
+                xAxis: widget.data[index].date),
+          );
         }
-        mensual.add(
-          DataPoint<DateTime>(
-              value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: widget.data[index].date),
-        );
       }
       return mensual;
     } else if (medida == 'grasa') {
@@ -119,23 +132,22 @@ class _GraficState extends State<Grafico> {
                 0.01 *
                 double.parse(widget.data[j].peso);
             contador++;
-          } else if (widget.data[j].date.month > i) {
-            break;
           }
         }
-        if (contador == 0) {
-          return mensual;
-        }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.month == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.month == i) {
+              index = k;
+              break;
+            }
           }
+          mensual.add(
+            DataPoint<DateTime>(
+                value: double.parse((promedio).toStringAsFixed(2)),
+                xAxis: widget.data[index].date),
+          );
         }
-        mensual.add(DataPoint<DateTime>(
-            value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: widget.data[index].date));
       }
       return mensual;
     } else if (medida == 'musculo') {
@@ -151,25 +163,22 @@ class _GraficState extends State<Grafico> {
                 0.01 *
                 double.parse(widget.data[j].peso);
             contador++;
-          } else if (widget.data[j].date.month > i) {
-            break;
           }
         }
-        if (contador == 0) {
-          return mensual;
-        }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.month == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.month == i) {
+              index = k;
+              break;
+            }
           }
+          mensual.add(
+            DataPoint<DateTime>(
+                value: double.parse((promedio).toStringAsFixed(2)),
+                xAxis: widget.data[index].date),
+          );
         }
-        mensual.add(
-          DataPoint<DateTime>(
-              value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: widget.data[index].date),
-        );
       }
       return mensual;
     }
@@ -195,16 +204,18 @@ class _GraficState extends State<Grafico> {
             break;
           }
         }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.year == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.year == i) {
+              index = k;
+              break;
+            }
           }
+          anual.add(DataPoint<DateTime>(
+              value: double.parse((promedio).toStringAsFixed(2)),
+              xAxis: widget.data[index].date));
         }
-        anual.add(DataPoint<DateTime>(
-            value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: widget.data[index].date));
       }
       return anual;
     } else if (medida == 'grasa') {
@@ -223,19 +234,20 @@ class _GraficState extends State<Grafico> {
             break;
           }
         }
-        if (contador == 0) {
-          return anual;
-        }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.year == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.year == i) {
+              index = k;
+              break;
+            }
           }
+          anual.add(
+            DataPoint<DateTime>(
+                value: double.parse((promedio).toStringAsFixed(2)),
+                xAxis: widget.data[index].date),
+          );
         }
-        anual.add(DataPoint<DateTime>(
-            value: double.parse((promedio).toStringAsFixed(2)),
-            xAxis: widget.data[index].date));
       }
       return anual;
     } else if (medida == 'musculo') {
@@ -254,21 +266,20 @@ class _GraficState extends State<Grafico> {
             break;
           }
         }
-        if (contador == 0) {
-          return anual;
-        }
-        promedio = suma / contador;
-        for (int k = 0; k < widget.data.length; k++) {
-          if (widget.data[k].date.year == i) {
-            index = k;
-            break;
+        if (contador != 0) {
+          promedio = suma / contador;
+          for (int k = 0; k < widget.data.length; k++) {
+            if (widget.data[k].date.year == i) {
+              index = k;
+              break;
+            }
           }
+          anual.add(
+            DataPoint<DateTime>(
+                value: double.parse((promedio).toStringAsFixed(2)),
+                xAxis: widget.data[index].date),
+          );
         }
-        anual.add(
-          DataPoint<DateTime>(
-              value: double.parse((promedio).toStringAsFixed(2)),
-              xAxis: widget.data[index].date),
-        );
       }
       return anual;
     }
@@ -476,28 +487,29 @@ class _GraficState extends State<Grafico> {
                       },
                       series: showLines("weekly"),
                       config: BezierChartConfig(
-                          showDataPoints: true,
-                          displayYAxis: true,
-                          stepsYAxis: 15,
-                          bubbleIndicatorLabelStyle:
-                              TextStyle(color: Colors.black),
-                          displayLinesXAxis: false,
-                          pinchZoom: false,
-                          displayDataPointWhenNoValue: false,
-                          updatePositionOnTap: false,
-                          verticalIndicatorStrokeWidth: 3.0,
-                          verticalIndicatorColor: Colors.black26,
-                          bubbleIndicatorColor: Colors.white60,
-                          bubbleIndicatorTitleStyle: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                          showVerticalIndicator: false,
-                          verticalIndicatorFixedPosition: false,
-                          backgroundColor: Colors.transparent,
-                          footerHeight: 35.0,
-                          xAxisTextStyle: TextStyle(color: Colors.black),
-                          yAxisTextStyle:
-                              TextStyle(color: Colors.black, fontSize: 10),
-                          startYAxisFromNonZeroValue: false),
+                        showDataPoints: true,
+                        displayYAxis: true,
+                        stepsYAxis: 15,
+                        bubbleIndicatorLabelStyle:
+                            TextStyle(color: Colors.black),
+                        displayLinesXAxis: false,
+                        pinchZoom: false,
+                        displayDataPointWhenNoValue: false,
+                        updatePositionOnTap: false,
+                        verticalIndicatorStrokeWidth: 3.0,
+                        verticalIndicatorColor: Colors.black26,
+                        bubbleIndicatorColor: Colors.white60,
+                        bubbleIndicatorTitleStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        showVerticalIndicator: false,
+                        verticalIndicatorFixedPosition: false,
+                        backgroundColor: Colors.transparent,
+                        footerHeight: 35.0,
+                        xAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle:
+                            TextStyle(color: Colors.black, fontSize: 10),
+                        startYAxisFromNonZeroValue: false,
+                      ),
                     ),
                   ),
                 ],
@@ -526,28 +538,29 @@ class _GraficState extends State<Grafico> {
                       selectedDate: toDate,
                       series: showLines("monthly"),
                       config: BezierChartConfig(
-                          showDataPoints: true,
-                          displayYAxis: true,
-                          stepsYAxis: 15,
-                          bubbleIndicatorLabelStyle:
-                              TextStyle(color: Colors.black),
-                          displayLinesXAxis: false,
-                          pinchZoom: false,
-                          displayDataPointWhenNoValue: false,
-                          updatePositionOnTap: false,
-                          verticalIndicatorStrokeWidth: 3.0,
-                          verticalIndicatorColor: Colors.black26,
-                          bubbleIndicatorColor: Colors.white60,
-                          bubbleIndicatorTitleStyle: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
-                          showVerticalIndicator: false,
-                          verticalIndicatorFixedPosition: false,
-                          backgroundColor: Colors.transparent,
-                          footerHeight: 35.0,
-                          xAxisTextStyle: TextStyle(color: Colors.black),
-                          yAxisTextStyle:
-                              TextStyle(color: Colors.black, fontSize: 10),
-                          startYAxisFromNonZeroValue: false),
+                        showDataPoints: true,
+                        displayYAxis: true,
+                        stepsYAxis: 15,
+                        bubbleIndicatorLabelStyle:
+                            TextStyle(color: Colors.black),
+                        displayLinesXAxis: false,
+                        pinchZoom: false,
+                        displayDataPointWhenNoValue: false,
+                        updatePositionOnTap: false,
+                        verticalIndicatorStrokeWidth: 3.0,
+                        verticalIndicatorColor: Colors.black26,
+                        bubbleIndicatorColor: Colors.white60,
+                        bubbleIndicatorTitleStyle: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                        showVerticalIndicator: false,
+                        verticalIndicatorFixedPosition: false,
+                        backgroundColor: Colors.transparent,
+                        footerHeight: 35.0,
+                        xAxisTextStyle: TextStyle(color: Colors.black),
+                        yAxisTextStyle:
+                            TextStyle(color: Colors.black, fontSize: 10),
+                        startYAxisFromNonZeroValue: false,
+                      ),
                     ),
                   ),
                 ],
@@ -577,29 +590,29 @@ class _GraficState extends State<Grafico> {
                         selectedDate: toDate,
                         series: showLines("yearly"),
                         config: BezierChartConfig(
-                            showDataPoints: true,
-                            displayYAxis: true,
-                            stepsYAxis: 15,
-                            bubbleIndicatorLabelStyle:
-                                TextStyle(color: Colors.black),
-                            displayLinesXAxis: false,
-                            pinchZoom: false,
-                            displayDataPointWhenNoValue: false,
-                            updatePositionOnTap: false,
-                            verticalIndicatorStrokeWidth: 3.0,
-                            verticalIndicatorColor: Colors.black26,
-                            bubbleIndicatorColor: Colors.white60,
-                            bubbleIndicatorTitleStyle: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                            showVerticalIndicator: false,
-                            verticalIndicatorFixedPosition: false,
-                            backgroundColor: Colors.transparent,
-                            footerHeight: 35.0,
-                            xAxisTextStyle: TextStyle(color: Colors.black),
-                            yAxisTextStyle:
-                                TextStyle(color: Colors.black, fontSize: 10),
-                            startYAxisFromNonZeroValue: false),
+                          showDataPoints: true,
+                          displayYAxis: true,
+                          stepsYAxis: 15,
+                          bubbleIndicatorLabelStyle:
+                              TextStyle(color: Colors.black),
+                          displayLinesXAxis: false,
+                          pinchZoom: false,
+                          displayDataPointWhenNoValue: false,
+                          updatePositionOnTap: false,
+                          verticalIndicatorStrokeWidth: 3.0,
+                          verticalIndicatorColor: Colors.black26,
+                          bubbleIndicatorColor: Colors.white60,
+                          bubbleIndicatorTitleStyle: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                          showVerticalIndicator: false,
+                          verticalIndicatorFixedPosition: false,
+                          backgroundColor: Colors.transparent,
+                          footerHeight: 35.0,
+                          xAxisTextStyle: TextStyle(color: Colors.black),
+                          yAxisTextStyle:
+                              TextStyle(color: Colors.black, fontSize: 10),
+                          startYAxisFromNonZeroValue: false,
+                        ),
                       ),
                     ),
                   ],

@@ -50,7 +50,7 @@ class _RegistroState extends State<Registro> {
   void _pickDate(BuildContext context) async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(2020, 1), //DateTime(DateTime.now().year - 5),
+      firstDate: DateTime(2018, 1), //DateTime(DateTime.now().year - 5),
       lastDate: DateTime.now(), //DateTime(DateTime.now().year + 5),
       initialDate: currDate,
     );
