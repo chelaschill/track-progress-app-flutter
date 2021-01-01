@@ -116,7 +116,7 @@ class _GraficState extends State<Grafico> {
           }
           if (contador != 0) {
             promedio = suma / contador;
-            for (int k = 0; k < separadorAnio.length; k++) {
+            for (int k = 0; k < separadorAnio[n].length; k++) {
               if (separadorAnio[n][k].date.month == i) {
                 index = k;
                 break;
@@ -153,7 +153,7 @@ class _GraficState extends State<Grafico> {
           }
           if (contador != 0) {
             promedio = suma / contador;
-            for (int k = 0; k < separadorAnio.length; k++) {
+            for (int k = 0; k < separadorAnio[n].length; k++) {
               if (separadorAnio[n][k].date.month == i) {
                 index = k;
                 break;
@@ -188,7 +188,7 @@ class _GraficState extends State<Grafico> {
           }
           if (contador != 0) {
             promedio = suma / contador;
-            for (int k = 0; k < separadorAnio.length; k++) {
+            for (int k = 0; k < separadorAnio[n].length; k++) {
               if (separadorAnio[n][k].date.month == i) {
                 index = k;
                 break;
