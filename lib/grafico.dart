@@ -84,99 +84,122 @@ class _GraficState extends State<Grafico> {
 
   List<DataPoint<DateTime>> dataMensual(String medida) {
     List<DataPoint<DateTime>> mensual = [];
+    List<List<Metrics>> separadorAnio = [];
 
-    int mesInicial = widget.data[0].date.month;
-    int mesFinal = widget.data[widget.data.length - 1].date.month;
+    int anioInicial = widget.data[0].date.year;
+    int anioFinal = widget.data[widget.data.length - 1].date.year;
+
+    for (int w = anioInicial; w <= anioFinal; w++) {
+      List<Metrics> temp = [];
+      for (int x = 0; x < widget.data.length; x++) {
+        if (widget.data[x].date.year == w) {
+          temp.add(widget.data[x]);
+        }
+      }
+      separadorAnio.add(temp);
+    }
 
     if (medida == 'peso') {
-      for (int i = mesInicial; i <= mesFinal; i++) {
-        int contador = 0;
-        double suma = 0;
-        double promedio = 0;
-        int index = 0;
-        for (int j = 0; j < widget.data.length; j++) {
-
-            if (widget.data[j].date.month == i) {
-            suma += double.parse(widget.data[j].peso);
-            contador++;
-          }
-        }
-        if (contador != 0) {
-          promedio = suma / contador;
-          for (int k = 0; k < widget.data.length; k++) {
-            if (widget.data[k].date.month == i) {
-              index = k;
-              break;
+      for (int n = 0; n < separadorAnio.length; n++) {
+        int mesInicial = separadorAnio[n][0].date.month;
+        int mesFinal = separadorAnio[n][separadorAnio[n].length - 1].date.month;
+        for (int i = mesInicial; i <= mesFinal; i++) {
+          int contador = 0;
+          double suma = 0;
+          double promedio = 0;
+          int index = 0;
+          for (int j = 0; j < separadorAnio[n].length; j++) {
+            if (separadorAnio[n][j].date.month == i) {
+              suma += double.parse(separadorAnio[n][j].peso);
+              contador++;
             }
           }
-          mensual.add(
-            DataPoint<DateTime>(
-                value: double.parse(
-                  (promedio).toStringAsFixed(2),
-                ),
-                xAxis: widget.data[index].date),
-          );
+          if (contador != 0) {
+            promedio = suma / contador;
+            for (int k = 0; k < separadorAnio.length; k++) {
+              if (separadorAnio[n][k].date.month == i) {
+                index = k;
+                break;
+              }
+            }
+            mensual.add(
+              DataPoint<DateTime>(
+                  value: double.parse(
+                    (promedio).toStringAsFixed(2),
+                  ),
+                  xAxis: separadorAnio[n][index].date),
+            );
+          }
         }
       }
       return mensual;
     } else if (medida == 'grasa') {
-      for (int i = mesInicial; i <= mesFinal; i++) {
-        int contador = 0;
-        double suma = 0;
-        double promedio = 0;
-        int index = 0;
-        for (int j = 0; j < widget.data.length; j++) {
-          if (widget.data[j].date.month == i && widget.data[j].grasa != null) {
-            suma += double.parse(widget.data[j].grasa) *
-                0.01 *
-                double.parse(widget.data[j].peso);
-            contador++;
-          }
-        }
-        if (contador != 0) {
-          promedio = suma / contador;
-          for (int k = 0; k < widget.data.length; k++) {
-            if (widget.data[k].date.month == i) {
-              index = k;
-              break;
+      for (int n = 0; n < separadorAnio.length; n++) {
+        int mesInicial = separadorAnio[n][0].date.month;
+        int mesFinal = separadorAnio[n][separadorAnio[n].length - 1].date.month;
+        for (int i = mesInicial; i <= mesFinal; i++) {
+          int contador = 0;
+          double suma = 0;
+          double promedio = 0;
+          int index = 0;
+          for (int j = 0; j < separadorAnio[n].length; j++) {
+            if (separadorAnio[n][j].date.month == i &&
+                separadorAnio[n][j].grasa != null) {
+              suma += double.parse(separadorAnio[n][j].grasa) *
+                  0.01 *
+                  double.parse(separadorAnio[n][j].peso);
+              contador++;
             }
           }
-          mensual.add(
-            DataPoint<DateTime>(
-                value: double.parse((promedio).toStringAsFixed(2)),
-                xAxis: widget.data[index].date),
-          );
+          if (contador != 0) {
+            promedio = suma / contador;
+            for (int k = 0; k < separadorAnio.length; k++) {
+              if (separadorAnio[n][k].date.month == i) {
+                index = k;
+                break;
+              }
+            }
+            mensual.add(
+              DataPoint<DateTime>(
+                  value: double.parse((promedio).toStringAsFixed(2)),
+                  xAxis: separadorAnio[n][index].date),
+            );
+          }
         }
       }
       return mensual;
     } else if (medida == 'musculo') {
-      for (int i = mesInicial; i <= mesFinal; i++) {
-        int contador = 0;
-        double suma = 0;
-        double promedio = 0;
-        int index = 0;
-        for (int j = 0; j < widget.data.length; j++) {
-          if (widget.data[j].date.month == i &&
-              widget.data[j].musculo != null) {
-            suma += double.parse(widget.data[j].musculo) *
-                0.01 *
-                double.parse(widget.data[j].peso);
-            contador++;
-          }
-        }
-        if (contador != 0) {
-          promedio = suma / contador;
-          for (int k = 0; k < widget.data.length; k++) {
-            if (widget.data[k].date.month == i) {
-              index = k;
-              break;
+      for (int n = 0; n < separadorAnio.length; n++) {
+        int mesInicial = separadorAnio[n][0].date.month;
+        int mesFinal = separadorAnio[n][separadorAnio[n].length - 1].date.month;
+        for (int i = mesInicial; i <= mesFinal; i++) {
+          int contador = 0;
+          double suma = 0;
+          double promedio = 0;
+          int index = 0;
+          for (int j = 0; j < separadorAnio[n].length; j++) {
+            if (separadorAnio[n][j].date.month == i &&
+                separadorAnio[n][j].musculo != null) {
+              suma += double.parse(separadorAnio[n][j].musculo) *
+                  0.01 *
+                  double.parse(separadorAnio[n][j].peso);
+              contador++;
             }
           }
-          mensual.add(
-            DataPoint<DateTime>(
-                value: double.parse((promedio).toStringAsFixed(2)),
-                xAxis: widget.data[index].date),
-          );
+          if (contador != 0) {
+            promedio = suma / contador;
+            for (int k = 0; k < separadorAnio.length; k++) {
+              if (separadorAnio[n][k].date.month == i) {
+                index = k;
+                break;
+              }
+            }
+            mensual.add(
+              DataPoint<DateTime>(
+                  value: double.parse((promedio).toStringAsFixed(2)),
+                  xAxis: separadorAnio[n][index].date),
+            );
+          }
         }
       }
       return mensual;
